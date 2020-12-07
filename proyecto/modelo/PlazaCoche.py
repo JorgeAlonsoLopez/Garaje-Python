@@ -2,17 +2,23 @@ from .Plaza import Plaza
 
 class PlazaCoche(Plaza):
     def __init__(self, nombre, coste):
-        self.__nombre = nombre
-        self.__coste = coste
+        super().__init__(nombre, coste)
 
     def __str__(self):
         if self.ocupado:
             if self.reservado:
-                return f"La plaza para coches {self.nombre} está ocupada por {self.abono.cliente.nombre} {self.abono.cliente.nombre} (DNI: {self.abono.cliente.dni})."
+                return f"La plaza para coches {self.nombre} está ocupada por un abonado."
             else:
-                return f"La plaza para coches {self.nombre}  está ocupada por una persona de forma temporal, con el coche con matricula {self.vehiculo.matricula}."
+                return f"La plaza para coches {self.nombre}  está ocupada por una persona de forma temporal."
         else:
             if self.reservado:
-                return f"La plaza para coches {self.nombre} está libre pero le pertenece a {self.abono.cliente.nombre} {self.abono.cliente.nombre} (DNI: {self.abono.cliente.dni})."
+                return f"La plaza para coches {self.nombre} está libre pero le pertenece a un abonado."
             else:
                 return f"La plaza para coches {self.nombre} está libre."
+
+    def info(self, abono):
+        if self.reservado:
+            return self.__str__() + f"El abonado es: {abono.cliente.nombre} {abono.cliente.nombre} (DNI: {abono.cliente.dni})"
+        else:
+            if self.ocupado:
+                return self.__str__() + f"El coche posee la matrícula: {self.vehiculo.matricula}."

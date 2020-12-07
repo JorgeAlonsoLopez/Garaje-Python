@@ -5,7 +5,6 @@ class Plaza():
         self.__ocupado = False
         self.__reservado = False
         self.__vehiculo = None
-        self.__abono = None
 
     @property
     def nombre(self):
@@ -47,24 +46,22 @@ class Plaza():
     def vehiculo(self, vehiculo):
         self.__vehiculo = vehiculo
 
-    @property
-    def abono(self):
-        return self.__abono
-
-    @abono.setter
-    def abono(self, abono):
-        self.__abono = abono
-
 
     def __str__(self):
         if self.ocupado:
             if self.reservado:
-                return f"La plaza genérica {self.nombre} está ocupada por {self.abono.cliente.nombre} {self.abono.cliente.nombre} (DNI: {self.abono.cliente.dni})."
+                return f"La plaza genérica {self.nombre} está ocupada por un cliente."
             else:
-                return f"La plaza genérica {self.nombre} está ocupada por una persona de forma temporal, con el vehiculo con matricula {self.vehiculo.matricula}."
+                return f"La plaza genérica {self.nombre} está ocupada por una persona de forma temporal."
         else:
             if self.reservado:
-                return f"La plaza genérica {self.nombre} está libre pero le pertenece a {self.abono.cliente.nombre} {self.abono.cliente.nombre} (DNI: {self.abono.cliente.dni})."
+                return f"La plaza genérica {self.nombre} está libre pero le pertenece a un cliente."
             else:
                 return f"La plaza genérica {self.nombre} está libre."
 
+    def info(self, abono):
+        if self.reservado:
+            return self.__str__() + f"El abonado es: {abono.cliente.nombre} {abono.cliente.nombre} (DNI: {abono.cliente.dni})"
+        else:
+            if self.ocupado:
+                return self.__str__() + f"El vehiculo posee la matrícula: {self.vehiculo.matricula}."
