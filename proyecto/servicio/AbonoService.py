@@ -1,8 +1,15 @@
 import repositorio.AbonoRepository as repo
 from datetime import datetime
 from datetime import timedelta
+# pip install datedelta
+import datedelta
 from modelo.Factura import *
+from modelo.Abono import *
+from modelo.Cliente import *
+import calendar
 import servicio.FacturaService as fact_serv
+import servicio.ParkingService as park_serv
+import servicio.ClienteService as clin_serv
 
 def add(listado_abonos, abono):
     return repo.add(listado_abonos, abono)
@@ -26,41 +33,121 @@ def caducidad_abono_m_y(mes, anio, listado_abonos):
             lista.append(abono)
     return lista
 
-def caducidad_proximos_dias(listado_abonos):
+def comprobar_creacion_abono(parking):
+    rest = False
+    try:
+        tipo = int(input("Introduzca el tipo de vehículo (1-coche, 2-moto, 3-movilidad reducida): "))
+        if not type(tipo) is int:
+            raise TypeError
+        if tipo > 3 and tipo < 1:
+            raise ValueError
+        rest = park_serv.is_free_space_abon(tipo, parking)
+        return tipo, rest
+    except TypeError:
+        print("Solo se permiten números entreos.")
+        print("Se cancela la operación")
+    except ValueError:
+        print("Los numeros tienen que estar entre 1 y 3.")
+        print("Se cancela la operación")
+
+
+def crear_abono(listado_abonos, lista_facturas, parking):
+    tipo, rest = comprobar_creacion_abono(parking)
+    if rest:
+        cliente = clin_serv.crear_cliente()
+        plaza = park_serv.asignar_plaza_abon(parking, tipo)
+        plaza.reservado = True
+        mes, precio = tipo_abono()
+        abono = Abono(cliente, datetime.now(), (datetime.now() + datedelta.datedelta(months=mes)), mes, precio)
+        repo.add(listado_abonos, abono)
+        factura = Factura(datetime.now(), cliente, precio)
+        fact_serv.add(lista_facturas, factura)
+        print(f"Su pin es el siguiente, no lo pierda: {abono.pin}")
+
+def tipo_abono():
+    try:
+        opt = int(input("Introduzca el tipo de abono que sea contratar.\n"
+                    "(1-mensual(25€), 2-trimestral(75€), 3-semestral(130€), 4-anual(200€)"))
+        if not type(opt) is int:
+            raise TypeError
+        if opt > 4 and opt < 1:
+            raise ValueError
+        if opt == 1:
+            mes=1
+            precio=25
+            return mes, precio
+        elif opt == 2:
+            mes=3
+            precio=75
+            return mes, precio
+        elif opt == 3:
+            mes=6
+            precio=130
+            return mes, precio
+        elif opt == 4:
+            mes=12
+            precio=200
+            return mes, precio
+    except TypeError:
+        print("Solo se permiten números entreos.")
+        print("Se cancela la operación")
+    except ValueError:
+        print("La opción tienen que estar entre 1 y 4.")
+        print("Se cancela la operación")
+
+
+def listar_caducidad_proximos_dias(listado_abonos):
     lista = []
     hoy = datetime.now()
     tope = hoy + timedelta(days=10)
     for abono in listado_abonos:
         if abono.fechaFinal >= hoy and abono.fechaFinal <= tope:
             lista.append(abono)
-    return lista
+    print(f"El número de abonos que caducan en los próximos 10 días son: {len(lista)}")
+    if len(lista) > 0:
+        print("Los abonos que caducan son los siguinetes: ")
+        for abono in lista:
+            print(f"El abono perteneciente a {abono.cliente.nombre} {abono.cliente.apellidos}, "
+            f"con una duración de {abono.meses} mes/es, emitido el {abono.fechaInicial.strftime('%d-%m-%Y')} "
+            f"para el vehículo con matrícula {abono.cliente.vehiculo.matricula}")
 
-def renovar_abono(listado_abonos,listado_facturas, dni, opt):
+def listar_caducidad_mes(listado_abonos):
+    lista = []
+    try:
+        mesComprobar = int(input('Introduzca el mes a comprobar en numeros, p. ej. 1, 11: '))
+        anioComprobar = int(input('Introduzca el año a comprobar, p. ej. 2004, 1999: '))
+        if not type(mesComprobar) is int:
+                raise TypeError
+        if mesComprobar > 12 and mesComprobar < 1:
+            raise ValueError
+        if not type(anioComprobar) is int:
+            raise TypeError
+        for abono in listado_abonos:
+            if abono.fechaFinal.month == mesComprobar and abono.fechaFinal.year == anioComprobar:
+                lista.append(abono)
+        print(f"El número de abonos que caducan en el mes y año indicado son: {len(lista)}")
+        if len(lista) > 0:
+            print("Los abonos que caducan son los siguinetes: ")
+            for abono in lista:
+                print(f"El abono perteneciente a {abono.cliente.nombre} {abono.cliente.apellidos}, "
+                      f"con una duración de {abono.meses} mes/es, emitido el {abono.fechaInicial.strftime('%d-%m-%Y')} "
+                      f"para el vehículo con matrícula {abono.cliente.vehiculo.matricula}")
+    except TypeError:
+        print("Solo se permiten números entreos.")
+        print("Se cancela la operación")
+    except ValueError:
+        print("La opción del mes tiene que estar entre 1 y 12.")
+        print("Se cancela la operación")
+
+def renovar_abono(listado_abonos,listado_facturas, dni):
     abono = search_by_dni(listado_abonos, dni)
-    if opt == 1:
-        abono.fechaFinal(abono.fechaFinal + timedelta(months=1))
-        abono.meses=1
-        abono.precio=25
-        factura = Factura(datetime.now(), abono.cliente, 25)
-        fact_serv.add(listado_facturas, factura)
-    elif opt == 2:
-        abono.fechaFinal(abono.fechaFinal + timedelta(months=3))
-        abono.meses =3
-        abono.precio=70
-        factura = Factura(datetime.now(), abono.cliente, 70)
-        fact_serv.add(listado_facturas, factura)
-    elif opt == 3:
-        abono.fechaFinal(abono.fechaFinal + timedelta(months=6))
-        abono.meses=6
-        abono.precio=130
-        factura = Factura(datetime.now(), abono.cliente, 130)
-        fact_serv.add(listado_facturas, factura)
-    elif opt == 4:
-        abono.fechaFinal(abono.fechaFinal + timedelta(months=12))
-        abono.meses=12
-        abono.precio=200
-        factura = Factura(datetime.now(), abono.cliente, 200)
-        fact_serv.add(listado_facturas, factura)
+    mes, precio = tipo_abono()
+    abono.fechaFinal= (datetime.now() + datedelta.datedelta(months=mes))
+    abono.meses=mes
+    abono.precio=precio
+    factura = Factura(datetime.now(), abono.cliente, precio)
+    fact_serv.add(listado_facturas, factura)
+
 
 
 

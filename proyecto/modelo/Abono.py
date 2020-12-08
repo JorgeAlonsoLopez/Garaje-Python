@@ -57,3 +57,11 @@ class Abono():
     def plaza(self, plaza):
         self.__plaza = plaza
 
+    @property
+    def pin(self):
+        return self.__pin
+
+    @pin.setter
+    def pin(self, pin):
+        self.__pin = pin
+
