@@ -7,19 +7,19 @@ def remove(lista, abono):
     if abono in lista:
         lista.remove(abono)
 
-def searchByDni(lista, dni):
+def search_by_dni(lista, dni):
     result = list(filter(lambda abono: abono.cliente.dni == dni, lista))
     if len(result) == 1:
         return result[0]
     else:
         return None
 
-def saveFile(lista):
+def save_file(lista):
     fichero = open('listaAbonos.pckl','wb')
     pickle.dump(lista, fichero)
     fichero.close()
 
-def loadFile():
+def load_file():
     lista = []
     try:
         fichero = open('listaAbonos.pckl','rb')

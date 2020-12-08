@@ -33,9 +33,4 @@ class Parking():
     def listaMoviReduc(self, listaMoviReduc):
         self.__listaMoviReduc = listaMoviReduc
 
-    def __str__(self):
-        res = ""
-        for i in self.listaCoches:
-            res += str(i)+"\n"
 
-        return res

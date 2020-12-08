@@ -7,14 +7,14 @@ def remove(lista, ticket):
     if ticket in lista:
         lista.remove(ticket)
 
-def searchByMatricula(lista, matricula):
-    result = list(filter(lambda ticket: ticket.matricula == matricula, searchPendi(lista)))
+def search_by_matricula(lista, matricula):
+    result = list(filter(lambda ticket: ticket.matricula == matricula, search_pendi(lista)))
     if len(result) == 1:
         return result[0]
     else:
         return None
 
-def searchPendi(lista):
+def search_pendi(lista):
     result = list(filter(lambda ticket: ticket.coste == 0, lista))
     if len(result) >= 1:
         return result
@@ -22,12 +22,12 @@ def searchPendi(lista):
         return None
 
 
-def saveFile(lista):
+def save_file(lista):
     fichero = open('listaTickets.pckl','wb')
     pickle.dump(lista, fichero)
     fichero.close()
 
-def loadFile():
+def load_file():
     lista = []
     try:
         fichero = open('listaTickets.pckl','rb')
