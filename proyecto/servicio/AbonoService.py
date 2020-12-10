@@ -40,7 +40,7 @@ def comprobar_creacion_abono(parking):
             raise TypeError
         if tipo > 3 and tipo < 1:
             raise ValueError
-        rest = park_serv.is_free_space_abon(tipo, parking)
+        rest = park_serv.is_free_space(tipo, parking)
         return tipo, rest
     except TypeError:
         print("Solo se permiten números entreos.")
@@ -49,37 +49,51 @@ def comprobar_creacion_abono(parking):
         print("Los numeros tienen que estar entre 1 y 3.")
         print("Se cancela la operación")
 
+def pedir_datos_fecha():
+    fecha1 = None
+    fin = True
+    while fin:
+        try:
+            dia1 = int(input('Introduzca el día de la fecha de inicio, p. ej. 1, 21: '))
+            mes1 = int(input('Introduzca el mes de la fecha de inicio, p. ej. 1, 11: '))
+            anio1 = int(input('Introduzca el año de la fecha de inicio, p. ej. 2004, 1999: '))
+            if not type(dia1) is int:
+                raise TypeError
+            if dia1 > 31 and dia1 < 1:
+                raise ValueError
+            if not type(mes1) is int:
+                raise TypeError
+            if mes1 > 12 and mes1 < 1:
+                raise ValueError
+            if not type(anio1) is int:
+                raise TypeError
+            fecha1 = datetime(anio1, mes1, dia1)
+            fin = False
+            return fecha1
+        except TypeError:
+            print("Solo se permiten números entreos.")
+            print("Se volverán a pedir los datos")
+        except ValueError:
+            print("La opción del mes tiene que estar entre 1 y 12 para los meses y de 1 a 31 para los días según corresponda el mes.")
+            print("Se volverán a pedir los datos")
 
 def crear_abono(listado_abonos, lista_facturas, parking):
     tipo, rest = comprobar_creacion_abono(parking)
-    acept = int(input("Las condiciones son las siguientes:\n"
-                      "Si en el momento de contratar su abono no hay una plaza que se encuentre libre para asignarsela,\n"
-                      "se le asignará una ocupada y el tiempo contratado empezará a contar a partir de que deposite su\n"
-                      "vehículo por primera vez.\n\n"
-                      "Si está de acuerdo pulse 1, en caso contrario, pulse 2 y se cancelará la contratación del abono."))
     try:
-        if not type(acept) is int:
-            raise TypeError
-        if acept != 1 or acept != 2:
-            raise ValueError
-        if acept == 1:
-            if rest:
-                cliente = clin_serv.crear_cliente()
-                plaza = park_serv.asignar_plaza_abon(parking, tipo)
-                plaza.reservado = True
-                mes, precio = tipo_abono()
-                abono = Abono(cliente, datetime.now(), (datetime.now() + datedelta.datedelta(months=mes)), mes, precio)
-                if plaza.ocupado == False:
-                    abono.estrenado = True
-                else:
-                    abono.estrenado = False
-                    abono.fechaInicial = None
-                    abono.fechaFinal = None
-                abono.plaza = plaza
-                repo.add(listado_abonos, abono)
-                factura = Factura(datetime.now(), cliente, precio)
-                fact_serv.add(lista_facturas, factura)
-                print(f"Su pin es el siguiente, no lo pierda: {abono.pin}")
+        if rest:
+            cliente = clin_serv.crear_cliente()
+            plaza = park_serv.asignar_plaza(parking, tipo)
+            plaza.reservado = True
+            mes, precio = tipo_abono()
+            fecha = pedir_datos_fecha()
+            abono = Abono(cliente, fecha, (fecha + datedelta.datedelta(months=mes)), mes, precio)
+            abono.plaza = plaza
+            repo.add(listado_abonos, abono)
+            factura = Factura(datetime.now(), cliente, precio)
+            fact_serv.add(lista_facturas, factura)
+            print(f"Su pin es el siguiente, no lo pierda: {abono.pin}")
+        else:
+            print("No es posible conceder el abono ya que no hay plazas disponibles en este momento.")
     except TypeError:
         print("Solo se permiten números entreos.")
         print("Se cancela la operación")

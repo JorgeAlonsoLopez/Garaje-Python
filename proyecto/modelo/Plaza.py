@@ -1,3 +1,6 @@
+from datetime import datetime
+from datetime import timedelta
+
 class Plaza():
     def __init__(self, nombre, coste):
         self.__nombre = nombre

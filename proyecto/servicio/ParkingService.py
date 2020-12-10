@@ -74,27 +74,6 @@ def asignar_plaza(parking, tipo):
 
     return plaza_libre
 
-def asignar_plaza_abon(parking, tipo):
-    plaza_libre = None
-    encontrado = False
-    if tipo == 1:
-        for plaza in parking.listaCoches:
-            if plaza.reservado == False and encontrado == False:
-                plaza_libre = plaza
-                encontrado = True
-    elif tipo == 2:
-        for plaza in parking.listaMotos:
-            if plaza.reservado == False and encontrado == False:
-                plaza_libre = plaza
-                encontrado = True
-    elif tipo ==3:
-        for plaza in parking.listaMoviReducf:
-            if plaza.reservado == False and encontrado == False:
-                plaza_libre = plaza
-                encontrado = True
-
-    return plaza_libre
-
 def is_free_space(tipo, parking):
     resl = False
     if tipo == 1:
@@ -111,21 +90,6 @@ def is_free_space(tipo, parking):
                 resl = True
     return resl
 
-def is_free_space_abon(tipo, parking):
-    resl = False
-    if tipo == 1:
-        for plaza in parking.listaCoches:
-            if plaza.reservado == False:
-                resl = True
-    elif tipo == 2:
-        for plaza in parking.listaMotos:
-            if plaza.reservado == False:
-                resl = True
-    elif tipo ==3:
-        for plaza in parking.listaMoviReducf:
-            if plaza.reservado == False:
-                resl = True
-    return resl
 
 def depositar_vehiculo(matricula, tipo, lista_tick, parking):
     result = False
@@ -147,27 +111,21 @@ def depositar_vehiculo(matricula, tipo, lista_tick, parking):
 def depositar_vehiculo_abonado(dni, matricula, lista_abonos):
     abono = serv_abo.search_by_dni(lista_abonos,dni)
     if abono != None:
-        if abono.cliente.vehiculo.matricula == matricula :
-            if abono.plaza.ocupado == False:
-                if abono.estrenado == False:
-                    abono.estrenado = True
-                    abono.fechaInicial = datetime.now()
-                    abono.fechaFinal = (datetime.now() + datedelta.datedelta(months=abono.meses))
-                abono.plaza.ocupado = True
-                abono.plaza.vehiculo = abono.cliente.vehiculo
-                print("El vehículo se ha aparcado con éxito.")
-                print("Gracias por usar nuestros servicios.")
-            else:
-                if abono.plaza.vehiculo.matricula == matricula:
-                    print("Puede que se le haya olvidado, pero ya a apacado.")
+        if abono.fechaInicial <= datetime.now():
+            if abono.cliente.vehiculo.matricula == matricula :
+                if abono.plaza.ocupado == False:
+                    abono.plaza.ocupado = True
+                    abono.plaza.vehiculo = abono.cliente.vehiculo
+                    print("El vehículo se ha aparcado con éxito.")
+                    print("Gracias por usar nuestros servicios.")
                 else:
-                    print("Va tener que esperar para estrenar la plaza.")
+                    print("Puede que se le haya olvidado, pero ya a aparcado.")
+            else:
+                print("No se puede proceder con los datos aportados.")
         else:
-            print("No se puede proceder con los datos aportados.")
+            print("Todavía no ha entrado en vigor el abono, tiene que esperar a la fecha establecida")
     else:
         print("No se puede proceder con los datos aportados.")
 
-
-    return
 
 
