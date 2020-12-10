@@ -8,6 +8,7 @@ class Abono():
         self.__precio = precio
         self.__pin = random.randrange(100000,1000000)
         self.__plaza = None
+        self.__estrenado = False
 
     @property
     def cliente(self):
@@ -16,6 +17,14 @@ class Abono():
     @cliente.setter
     def cliente(self, cliente):
         self.__cliente = cliente
+
+    @property
+    def estrenado(self):
+        return self.__estrenado
+
+    @estrenado.setter
+    def estrenado(self, estrenado):
+        self.__estrenado = estrenado
 
     @property
     def fechaInicial(self):

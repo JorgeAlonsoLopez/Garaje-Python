@@ -52,16 +52,41 @@ def comprobar_creacion_abono(parking):
 
 def crear_abono(listado_abonos, lista_facturas, parking):
     tipo, rest = comprobar_creacion_abono(parking)
-    if rest:
-        cliente = clin_serv.crear_cliente()
-        plaza = park_serv.asignar_plaza_abon(parking, tipo)
-        plaza.reservado = True
-        mes, precio = tipo_abono()
-        abono = Abono(cliente, datetime.now(), (datetime.now() + datedelta.datedelta(months=mes)), mes, precio)
-        repo.add(listado_abonos, abono)
-        factura = Factura(datetime.now(), cliente, precio)
-        fact_serv.add(lista_facturas, factura)
-        print(f"Su pin es el siguiente, no lo pierda: {abono.pin}")
+    acept = int(input("Las condiciones son las siguientes:\n"
+                      "Si en el momento de contratar su abono no hay una plaza que se encuentre libre para asignarsela,\n"
+                      "se le asignará una ocupada y el tiempo contratado empezará a contar a partir de que deposite su\n"
+                      "vehículo por primera vez.\n\n"
+                      "Si está de acuerdo pulse 1, en caso contrario, pulse 2 y se cancelará la contratación del abono."))
+    try:
+        if not type(acept) is int:
+            raise TypeError
+        if acept != 1 or acept != 2:
+            raise ValueError
+        if acept == 1:
+            if rest:
+                cliente = clin_serv.crear_cliente()
+                plaza = park_serv.asignar_plaza_abon(parking, tipo)
+                plaza.reservado = True
+                mes, precio = tipo_abono()
+                abono = Abono(cliente, datetime.now(), (datetime.now() + datedelta.datedelta(months=mes)), mes, precio)
+                if plaza.ocupado == False:
+                    abono.estrenado = True
+                else:
+                    abono.estrenado = False
+                    abono.fechaInicial = None
+                    abono.fechaFinal = None
+                abono.plaza = plaza
+                repo.add(listado_abonos, abono)
+                factura = Factura(datetime.now(), cliente, precio)
+                fact_serv.add(lista_facturas, factura)
+                print(f"Su pin es el siguiente, no lo pierda: {abono.pin}")
+    except TypeError:
+        print("Solo se permiten números entreos.")
+        print("Se cancela la operación")
+    except ValueError:
+        print("Los numeros tienen que ser 1 o 2.")
+        print("Se cancela la operación")
+
 
 def tipo_abono():
     try:

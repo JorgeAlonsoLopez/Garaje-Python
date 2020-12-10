@@ -3,7 +3,9 @@ from modelo.Vehiculo import *
 from modelo.Ticket import *
 from datetime import datetime
 from datetime import timedelta
+import datedelta
 import servicio.TicketService as serv_tick
+import servicio.AbonoService as serv_abo
 
 def search_plaza_by_name(parking, nombre):
      return repo.search_plaza_by_name(parking, nombre)
@@ -142,6 +144,30 @@ def depositar_vehiculo(matricula, tipo, lista_tick, parking):
     else:
         return "No se puede aparcar, no hay sitio."
 
+def depositar_vehiculo_abonado(dni, matricula, lista_abonos):
+    abono = serv_abo.search_by_dni(lista_abonos,dni)
+    if abono != None:
+        if abono.cliente.vehiculo.matricula == matricula :
+            if abono.plaza.ocupado == False:
+                if abono.estrenado == False:
+                    abono.estrenado = True
+                    abono.fechaInicial = datetime.now()
+                    abono.fechaFinal = (datetime.now() + datedelta.datedelta(months=abono.meses))
+                abono.plaza.ocupado = True
+                abono.plaza.vehiculo = abono.cliente.vehiculo
+                print("El vehículo se ha aparcado con éxito.")
+                print("Gracias por usar nuestros servicios.")
+            else:
+                if abono.plaza.vehiculo.matricula == matricula:
+                    print("Puede que se le haya olvidado, pero ya a apacado.")
+                else:
+                    print("Va tener que esperar para estrenar la plaza.")
+        else:
+            print("No se puede proceder con los datos aportados.")
+    else:
+        print("No se puede proceder con los datos aportados.")
 
+
+    return
 
 
