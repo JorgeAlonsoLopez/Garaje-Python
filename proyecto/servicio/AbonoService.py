@@ -43,7 +43,7 @@ def comprobar_creacion_abono(parking):
         rest = park_serv.is_free_space(tipo, parking)
         return tipo, rest
     except TypeError:
-        print("Solo se permiten números entreos.")
+        print("Solo se permiten números enteros.")
         print("Se cancela la operación")
     except ValueError:
         print("Los numeros tienen que estar entre 1 y 3.")
@@ -71,7 +71,7 @@ def pedir_datos_fecha():
             fin = False
             return fecha1
         except TypeError:
-            print("Solo se permiten números entreos.")
+            print("Solo se permiten números enteros.")
             print("Se volverán a pedir los datos")
         except ValueError:
             print("La opción del mes tiene que estar entre 1 y 12 para los meses y de 1 a 31 para los días según corresponda el mes.")
@@ -95,7 +95,7 @@ def crear_abono(listado_abonos, lista_facturas, parking):
         else:
             print("No es posible conceder el abono ya que no hay plazas disponibles en este momento.")
     except TypeError:
-        print("Solo se permiten números entreos.")
+        print("Solo se permiten números enteros.")
         print("Se cancela la operación")
     except ValueError:
         print("Los numeros tienen que ser 1 o 2.")
@@ -127,7 +127,7 @@ def tipo_abono():
             precio=200
             return mes, precio
     except TypeError:
-        print("Solo se permiten números entreos.")
+        print("Solo se permiten números enteros.")
         print("Se cancela la operación")
     except ValueError:
         print("La opción tienen que estar entre 1 y 4.")
@@ -171,7 +171,7 @@ def listar_caducidad_mes(listado_abonos):
                       f"con una duración de {abono.meses} mes/es, emitido el {abono.fechaInicial.strftime('%d-%m-%Y')} "
                       f"para el vehículo con matrícula {abono.cliente.vehiculo.matricula}")
     except TypeError:
-        print("Solo se permiten números entreos.")
+        print("Solo se permiten números enteros.")
         print("Se cancela la operación")
     except ValueError:
         print("La opción del mes tiene que estar entre 1 y 12.")

@@ -96,7 +96,7 @@ def datos_facturacion():
             fin = False
             return fecha1, fecha2
         except TypeError:
-            print("Solo se permiten números entreos.")
+            print("Solo se permiten números enteros.")
             print("Se volverán a pedir los datos")
         except ValueError:
             print("La opción del mes tiene que estar entre 1 y 12 para los meses y de 1 a 31 para los días según corresponda el mes.")

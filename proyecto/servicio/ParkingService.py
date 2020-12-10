@@ -103,8 +103,8 @@ def depositar_vehiculo(matricula, tipo, lista_tick, parking):
         serv_tick.add(lista_tick,ticket)
         plaza.ocupado = True
         serv_tick.pintar_ticket(ticket)
-    if result:
-        return "Se ha finalizado el aparcado el vehículo sin problemas."
+        if result:
+            return "Se ha finalizado el aparcado el vehículo sin problemas."
     else:
         return "No se puede aparcar, no hay sitio."
 
