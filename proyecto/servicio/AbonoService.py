@@ -1,7 +1,6 @@
 import repositorio.AbonoRepository as repo
 from datetime import datetime
 from datetime import timedelta
-# pip install datedelta
 import datedelta
 from modelo.Factura import *
 from modelo.Abono import *
