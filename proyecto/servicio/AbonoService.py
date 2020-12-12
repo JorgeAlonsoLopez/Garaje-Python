@@ -19,6 +19,9 @@ def remove(listado_abonos, abono):
 def search_by_dni(listado_abonos, dni):
     return repo.search_by_dni(listado_abonos, dni)
 
+def search_by_nombre_plaza(listado_abonos, nombre_plaza):
+    return repo.search_by_nombre_plaza(listado_abonos, nombre_plaza)
+
 def save_file(listado_abonos):
     return repo.save_file(listado_abonos)
 
@@ -36,17 +39,12 @@ def comprobar_creacion_abono(parking):
     rest = False
     try:
         tipo = int(input("Introduzca el tipo de vehículo (1-coche, 2-moto, 3-movilidad reducida): "))
-        if not type(tipo) is int:
-            raise TypeError
-        if tipo > 3 and tipo < 1:
+        if tipo > 3 or tipo < 1:
             raise ValueError
         rest = park_serv.is_free_space(tipo, parking)
         return tipo, rest
-    except TypeError:
-        print("Solo se permiten números enteros.")
-        print("Se cancela la operación")
     except ValueError:
-        print("Los numeros tienen que estar entre 1 y 3.")
+        print("Los numeros tienen que ser enteros entre 1 y 3.")
         print("Se cancela la operación")
 
 def pedir_datos_fecha():
@@ -54,20 +52,16 @@ def pedir_datos_fecha():
     fin = True
     while fin:
         try:
-            dia1 = int(input('Introduzca el día de la fecha de inicio, p. ej. 1, 21: '))
-            mes1 = int(input('Introduzca el mes de la fecha de inicio, p. ej. 1, 11: '))
-            anio1 = int(input('Introduzca el año de la fecha de inicio, p. ej. 2004, 1999: '))
-            if not type(dia1) is int:
-                raise TypeError
-            if dia1 > 31 and dia1 < 1:
+            dia = int(input(f'Introduzca el día, p. ej. 1, 21: '))
+            if dia > 31 or dia < 1:
                 raise ValueError
-            if not type(mes1) is int:
-                raise TypeError
-            if mes1 > 12 and mes1 < 1:
+            mes = int(input(f'Introduzca el mes, p. ej. 1, 11: '))
+            if mes > 12 or mes < 1:
                 raise ValueError
-            if not type(anio1) is int:
-                raise TypeError
-            fecha1 = datetime(anio1, mes1, dia1)
+            anio = int(input(f'Introduzca el año, p. ej. 2004, 1999: '))
+            if anio < 2019 :
+                raise ValueError
+            fecha1 = datetime(anio, mes, dia)
             fin = False
             return fecha1
         except TypeError:
@@ -91,6 +85,7 @@ def crear_abono(listado_abonos, lista_facturas, parking):
             repo.add(listado_abonos, abono)
             factura = Factura(datetime.now(), cliente, precio)
             fact_serv.add(lista_facturas, factura)
+            print(f"Su plaza es la siguiente, no se olvide: {abono.plaza.nombre}")
             print(f"Su pin es el siguiente, no lo pierda: {abono.pin}")
         else:
             print("No es posible conceder el abono ya que no hay plazas disponibles en este momento.")
@@ -106,9 +101,7 @@ def tipo_abono():
     try:
         opt = int(input("Introduzca el tipo de abono que sea contratar.\n"
                     "(1-mensual(25€), 2-trimestral(75€), 3-semestral(130€), 4-anual(200€)"))
-        if not type(opt) is int:
-            raise TypeError
-        if opt > 4 and opt < 1:
+        if opt > 4 or opt < 1:
             raise ValueError
         if opt == 1:
             mes=1
@@ -126,11 +119,8 @@ def tipo_abono():
             mes=12
             precio=200
             return mes, precio
-    except TypeError:
-        print("Solo se permiten números enteros.")
-        print("Se cancela la operación")
     except ValueError:
-        print("La opción tienen que estar entre 1 y 4.")
+        print("La opción tienen que ser enteros entre 1 y 4.")
         print("Se cancela la operación")
 
 
@@ -154,12 +144,10 @@ def listar_caducidad_mes(listado_abonos):
     try:
         mesComprobar = int(input('Introduzca el mes a comprobar en numeros, p. ej. 1, 11: '))
         anioComprobar = int(input('Introduzca el año a comprobar, p. ej. 2004, 1999: '))
-        if not type(mesComprobar) is int:
-                raise TypeError
-        if mesComprobar > 12 and mesComprobar < 1:
+        if mesComprobar > 12 or mesComprobar < 1:
             raise ValueError
-        if not type(anioComprobar) is int:
-            raise TypeError
+        if anioComprobar < 2000:
+            raise ValueError
         for abono in listado_abonos:
             if abono.fechaFinal.month == mesComprobar and abono.fechaFinal.year == anioComprobar:
                 lista.append(abono)
@@ -170,11 +158,8 @@ def listar_caducidad_mes(listado_abonos):
                 print(f"El abono perteneciente a {abono.cliente.nombre} {abono.cliente.apellidos}, "
                       f"con una duración de {abono.meses} mes/es, emitido el {abono.fechaInicial.strftime('%d-%m-%Y')} "
                       f"para el vehículo con matrícula {abono.cliente.vehiculo.matricula}")
-    except TypeError:
-        print("Solo se permiten números enteros.")
-        print("Se cancela la operación")
     except ValueError:
-        print("La opción del mes tiene que estar entre 1 y 12.")
+        print("Los datos tienen que ser número enteros. La opción del mes tiene que estar entre 1 y 12 y años superiores al 2000.")
         print("Se cancela la operación")
 
 def renovar_abono(listado_abonos,listado_facturas, dni):

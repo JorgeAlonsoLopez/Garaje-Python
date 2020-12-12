@@ -22,7 +22,7 @@ class Cliente():
 
     @nombre.setter
     def nombre(self, nombre):
-        self.nombre = nombre
+        self.__nombre = nombre
 
     @property
     def apellidos(self):

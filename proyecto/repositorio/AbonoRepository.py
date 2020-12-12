@@ -14,6 +14,13 @@ def search_by_dni(lista, dni):
     else:
         return None
 
+def search_by_nombre_plaza(lista, nombre_plaza):
+    result = list(filter(lambda abono: abono.plaza.nombre == nombre_plaza, lista))
+    if len(result) == 1:
+        return result[0]
+    else:
+        return None
+
 def save_file(lista):
     fichero = open('listaAbonos.pckl','wb')
     pickle.dump(lista, fichero)

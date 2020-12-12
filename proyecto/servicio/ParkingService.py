@@ -127,5 +127,74 @@ def depositar_vehiculo_abonado(dni, matricula, lista_abonos):
     else:
         print("No se puede proceder con los datos aportados.")
 
+def pedir_pin():
+    rep = True
+    while rep:
+        try:
+            pin = int(input("Inserte el pin."))
+            if pin < 100000 or pin > 999999:
+                raise ValueError
+            rep = False
+        except ValueError:
+            print("El pin debe sen un número entero entre 100000 y 999999.")
+            print("Se repite la petición")
+    return pin
+
+def pedir_pin_fallo():
+    rep = True
+    while rep:
+        try:
+            pin = int(input("Inserte el pin de nuevo, el proporcionado no es correcto."))
+            if pin < 100000 or pin > 999999:
+                raise ValueError
+            rep = False
+        except ValueError:
+            print("El pin debe sen un número entero entre 100000 y 999999.")
+            print("Se repite la petición")
+    return pin
+
+def retirar_vehiculo(matricula, nombre_plaza, pin, parking, lista_tick):
+    plaza = search_plaza_by_name(parking, nombre_plaza)
+    if plaza != None:
+        tick = serv_tick.search_by_matricula(lista_tick, matricula)
+
+        if tick != None:
+            while pin != tick.pin:
+                pin = pedir_pin_fallo()
+            serv_tick.pagar_ticket(nombre_plaza, parking, tick)
+            tick.fechaSalida = datetime.now()
+            tick.plaza.ocupado = False
+            serv_tick.pintar_ticket(tick)
+            print("El vehículo se ha retirado con éxito.")
+            print("Gracias por usar nuestros servicios.")
+        else:
+          print("No ha sido posible la retirada no nos consta su vehiculo en el sistema.")
+
+    else:
+        print("No se puede proceder con la operación.")
+
+
+def retirar_vehiculo_abonado(matricula, nombre_plaza, lista_abonos, pin):
+    abono = serv_abo.search_by_nombre_plaza(lista_abonos,nombre_plaza)
+    if abono != None:
+        if abono.fechaInicial <= datetime.now():
+            if abono.cliente.vehiculo.matricula == matricula and abono.pin == pin:
+                if abono.plaza.ocupado == True:
+                    abono.plaza.ocupado = False
+                    abono.plaza.vehiculo = None
+                    print("El vehículo se ha retirado con éxito.")
+                    print("Gracias por usar nuestros servicios.")
+                else:
+                    print("Puede que se le haya olvidado, pero no ha guardado el vehículo.")
+            else:
+                print("No se puede proceder con los datos aportados.")
+        else:
+            print("Todavía no ha entrado en vigor el abono, tiene que esperar a la fecha establecida")
+    else:
+        print("No se puede proceder con los datos aportados.")
+
+
+
+
 
 

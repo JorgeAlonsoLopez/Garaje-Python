@@ -2,10 +2,28 @@ from modelo.Cliente import *
 from modelo.Vehiculo import *
 
 def modificar_cliente(cliente):
-    nombre = input("Por favor, inserte su nombre: ")
-    apellidos = input("Por favor, inserte sus apellidos: ")
-    tarjeta = input("Por favor, inserte su número de tarjeta: ")
-    email = input("Por favor, inserte su email: ")
+    rep = True
+    while rep:
+        try:
+            nombre = input("Introduzca el nombre del usuario: ")
+            if nombre == "":
+                raise ValueError
+            apellidos = input("Introduzca los apellido del usuario: ")
+            if apellidos == "":
+                raise ValueError
+            tarjeta = input("Introduzca la tarjeta de crédito del usuario: ")
+            if tarjeta == "":
+                raise ValueError
+            email = input("Introduzca el email del usuario: ")
+            if email == "":
+                raise ValueError
+            matricula = input("Introduzca la matrícula del vehículo: ")
+            if matricula == "":
+                raise ValueError
+            rep = False
+        except ValueError:
+            print("Los campos de deben estar vacíos.")
+            print("Se repite la operación")
     cliente.nombre=nombre
     cliente.apellidos=apellidos
     cliente.numTarjeta=tarjeta
@@ -14,12 +32,28 @@ def modificar_cliente(cliente):
 
 
 def crear_cliente():
-    dni = input("Introduzca el dni del usuario: ")
-    nombre = input("Introduzca el nombre del usuario: ")
-    apellidos = input("Introduzca los apellido del usuario: ")
-    tarjeta = input("Introduzca la tarjeta de crédito del usuario: ")
-    email = input("Introduzca el email del usuario: ")
-    matricula = input("Introduzca la matrícula del vehículo: ")
-    vehiculo = Vehiculo(matricula)
-    cliente = Cliente(dni, nombre, apellidos, email, tarjeta, vehiculo)
-    return cliente
+    try:
+        dni = input("Introduzca el dni del usuario: ")
+        if dni == "":
+            raise ValueError
+        nombre = input("Introduzca el nombre del usuario: ")
+        if nombre == "":
+            raise ValueError
+        apellidos = input("Introduzca los apellido del usuario: ")
+        if apellidos == "":
+            raise ValueError
+        tarjeta = input("Introduzca la tarjeta de crédito del usuario: ")
+        if tarjeta == "":
+            raise ValueError
+        email = input("Introduzca el email del usuario: ")
+        if email == "":
+            raise ValueError
+        matricula = input("Introduzca la matrícula del vehículo: ")
+        if matricula == "":
+            raise ValueError
+        vehiculo = Vehiculo(matricula)
+        cliente = Cliente(dni, nombre, apellidos, email, tarjeta, vehiculo)
+        return cliente
+    except ValueError:
+        print("Los campos de deben estar vacíos.")
+        print("Se cancela la operación")

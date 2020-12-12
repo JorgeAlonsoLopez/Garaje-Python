@@ -29,78 +29,55 @@ def pagar_ticket(nombre_plaza, parking, ticket):
         min=(ceil((actual-ticket.fechaEntrada).total_seconds()/60))
         precio = min * plaza.coste
         while not correcto:
-            print(f"El precio a pagar son: {precio} €")
-            dinero = int(input("Inserte el dinero, en euros(€). "))
-            if dinero >= precio:
-                correcto = True
-                ticket.coste = precio
-                print(f"El cambio es: {round(dinero - precio,2)} €")
-            else:
-                print("La cantidad es menor a la esperada. ")
+            try:
+                print(f"El precio a pagar son: {precio} €")
+                dinero = int(input("Inserte el dinero, en euros(€), sin céntimos. "))
+                if dinero >= 0:
+                    raise ValueError
+                if dinero >= precio:
+                    correcto = True
+                    ticket.coste = precio
+                    print(f"El cambio es: {round(dinero - precio,2)} €")
+                else:
+                    print("La cantidad es menor a la esperada. ")
+            except ValueError:
+                print("La cantidad a insertar debe ser superior o igual a 0 €.")
+                print("Se volverán a pedir los datos")
 
 
-def datos_facturacion():
-    fecha1 = None
-    fecha2 = None
+def pedir_fecha(msg):
+
+    fecha = None
     fin = True
     while fin:
         try:
-            dia1 = int(input('Introduzca el día de la fecha de inicio, p. ej. 1, 21: '))
-            mes1 = int(input('Introduzca el mes de la fecha de inicio, p. ej. 1, 11: '))
-            anio1 = int(input('Introduzca el año de la fecha de inicio, p. ej. 2004, 1999: '))
-            hora1 = int(input('Introduzca la hora de la fecha de inicio en formato 24H, p. ej. 1, 23: '))
-            min1 = int(input('Introduzca los minutos de la fecha de inicio, p. ej. 1, 48: '))
-            dia2 = int(input('Introduzca el día de la fecha final, p. ej. 1, 21: '))
-            mes2 = int(input('Introduzca el mes de la fecha final, p. ej. 1, 11: '))
-            anio2 = int(input('Introduzca el año de la fecha final, p. ej. 2004, 1999: '))
-            hora2 = int(input('Introduzca la hora de la fecha final en formato 24H, p. ej. 1, 23: '))
-            min2 = int(input('Introduzca los minutos de la fecha final, p. ej. 1, 48: '))
-            if not type(dia1) is int:
-                raise TypeError
-            if dia1 > 31 and dia1 < 1:
+            dia = int(input(f'Introduzca el día de la fecha de {msg}, p. ej. 1, 21: '))
+            if dia > 31 or dia < 1:
                 raise ValueError
-            if not type(mes1) is int:
-                raise TypeError
-            if mes1 > 12 and mes1 < 1:
+            mes = int(input(f'Introduzca el mes de la fecha de {msg}, p. ej. 1, 11: '))
+            if mes > 12 or mes < 1:
                 raise ValueError
-            if not type(dia2) is int:
-                raise TypeError
-            if dia2 > 31 and dia2 < 1:
+            anio = int(input(f'Introduzca el año de la fecha de {msg}, p. ej. 2004, 1999: '))
+            if anio < 2019 :
                 raise ValueError
-            if not type(mes2) is int:
-                raise TypeError
-            if mes2 > 31 and mes2 < 1:
+            hora = int(input(f'Introduzca la hora de la fecha de {msg} en formato 24H, p. ej. 1, 23: '))
+            if hora > 23 or hora < 0:
                 raise ValueError
-            if not type(anio1) is int:
-                raise TypeError
-            if not type(anio2) is int:
-                raise TypeError
-            if not type(hora1) is int:
-                raise TypeError
-            if hora1 > 23 and hora1 < 0:
+            min = int(input(f'Introduzca los minutos de la fecha de {msg}, p. ej. 1, 48: '))
+            if min > 59 or min < 0:
                 raise ValueError
-            if not type(hora2) is int:
-                raise TypeError
-            if hora2 > 23 and hora2 < 0:
-                raise ValueError
-            if not type(min1) is int:
-                raise TypeError
-            if min1 > 59 and min1 < 0:
-                raise ValueError
-            if not type(min2) is int:
-                raise TypeError
-            if min2 > 59 and min2 < 0:
-                raise ValueError
-            fecha1 = datetime(anio1, mes1, dia1, hora1, min1)
-            fecha2 = datetime(anio2, mes2, dia2, hora2, min2)
+            fecha = datetime(anio, mes, dia, hora, min)
             fin = False
-            return fecha1, fecha2
-        except TypeError:
-            print("Solo se permiten números enteros.")
-            print("Se volverán a pedir los datos")
         except ValueError:
-            print("La opción del mes tiene que estar entre 1 y 12 para los meses y de 1 a 31 para los días según corresponda el mes.")
+            print("Los datos tienen que ser enteros, para los meses tiene que estar entre 1 y 12 para los meses, de 1 a 31 para días, "
+                  "de 0 a 11 para horas, de 0 a 59 para minutos y años superiores al 2019.")
             print("Se volverán a pedir los datos")
+    return fecha
+
+def datos_facturacion():
+    fecha1 = pedir_fecha("inicio")
+    fecha2 = pedir_fecha("fin")
+    return fecha1, fecha2
 
 
 
