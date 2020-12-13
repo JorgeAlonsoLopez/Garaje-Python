@@ -1,6 +1,8 @@
 import sys
 import os
 import tkinter as tk
+from datetime import datetime
+from math import ceil
 from tkinter import messagebox
 import servicio.ParkingService as park_serv
 import servicio.AbonoService as abon_serv
@@ -148,11 +150,6 @@ class Ingrs_clien(tk.Frame):
         label_tex = tk.Label(self, textvariable=ticketInf, font=LARGE_FONT).pack(pady=5)
 
         def salir(self):
-            #self.destroy()
-            #self.__init__()
-            #ticketInf.set("")
-            #v.set(0)
-            #park.set("")
             python = sys.executable
             os.execl(python, python, * sys.argv)
             return controller.show_frame(StartPage)
@@ -181,16 +178,83 @@ class Retir_client(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page One!!!", font=LARGE_FONT)
-        label.pack(pady=10,padx=10)
 
-        button1 = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(StartPage))
-        button1.pack()
+        matr=tk.StringVar()
+        plz=tk.StringVar()
+        pin=tk.StringVar()
+        ticketInf=tk.StringVar()
+        fail = tk.StringVar()
+        exito = tk.StringVar()
+        pago = False
+        precio_mostrar=tk.StringVar()
+        dinero = tk.IntVar()
 
-        button2 = tk.Button(self, text="Page Two",
-                            command=lambda: controller.show_frame(PageTwo))
-        button2.pack()
+        def calculo(pago, fail, precio_mostrar):
+            if plz.get() != "" and matr.get() != "" and pin.get() != "":
+                plaza = park_serv.search_plaza_by_name(parking, plz.get().upper())
+                tick = tick_serv.search_by_matricula(lista_tickets, matr.get().upper())
+                if plaza != None and tick != None and tick.pin == int(pin.get()):
+                    fail.set("")
+                    actual=datetime.now()
+                    min=(ceil((actual-tick.fechaEntrada).total_seconds()/60))
+                    precio = min * plaza.coste
+                    precio_mostrar.set("El coste es:(€)\n"+str(round(precio,2)))
+                else:
+                    fail.set("No se puede proceder con los datos aprotados, inténtelo de nuevo.")
+            else:
+                fail.set("No se puede proceder con los datos aprotados, inténtelo de nuevo.")
+
+        def retirar():
+            if plz.get() != "" and matr.get() != "" and pin.get() != "":
+                plaza = park_serv.search_plaza_by_name(parking, plz.get().upper())
+                tick = tick_serv.search_by_matricula(lista_tickets, matr.get().upper())
+
+                if plaza != None and tick != None and dinero.get() >= 0:
+
+                    ok = tick_serv.pagar_ticket(plz.get().upper(),parking,tick, dinero.get())
+                    if ok:
+                        park_serv.retirar_vehiculo(matr.get().upper(),plz.get().upper(),int(pin.get()),parking,lista_tickets)
+                        ticketInf.set(tick_serv.pintar_ticket(tick))
+                        tick_serv.save_file(lista_tickets)
+                        park_serv.save_file(parking)
+                    else:
+                        ticketInf.set("La cantidad insertada no es suficiente")
+
+
+        label_tex = tk.Label(self, text="Inserte la matrícula del vehículo, el nombre de la plaza y pin", font=LARGE_FONT).pack(pady=20)
+
+        label_tex = tk.Label(self, text="Matrícula", font=LARGE_FONT).pack(pady=10)
+
+        cuadro = tk.Entry(self, textvariable=matr).pack(padx=5)
+
+        label_tex = tk.Label(self, text="Nombre de la plaza", font=LARGE_FONT).pack(pady=10)
+
+        cuadro = tk.Entry(self, textvariable=plz).pack(padx=5)
+
+        label_tex = tk.Label(self, text="PIN", font=LARGE_FONT).pack(pady=10)
+
+        cuadro = tk.Entry(self, textvariable=pin).pack(padx=5)
+
+        boton1 = tk.Button(self, text="Calcular precio", font=LARGE_FONT, command=lambda :calculo(pago, fail, precio_mostrar)).pack(pady=5)
+
+        label_tex = tk.Label(self, textvariable=fail, font=LARGE_FONT).pack()
+
+        label_tex = tk.Label(self, textvariable=exito, font=LARGE_FONT).pack()
+
+        label_tex = tk.Label(self, textvariable=precio_mostrar, font=LARGE_FONT).pack(pady=5)
+        label_tex = tk.Label(self, text="Inserte la cantidad establecida (no se admiten céntimos)", font=LARGE_FONT).pack(pady=10)
+        cuadro = tk.Entry(self, textvariable=dinero).pack(padx=5)
+        boton2 = tk.Button(self, text="Confirmar la retirada", font=LARGE_FONT, command=retirar).pack(pady=20)
+
+        label_tex = tk.Label(self, textvariable=ticketInf, font=LARGE_FONT).pack(pady=5)
+
+        def salir(self):
+            python = sys.executable
+            os.execl(python, python, * sys.argv)
+            return controller.show_frame(StartPage)
+
+        boton2 = tk.Button(self, text="Salir", font=LARGE_FONT, command=lambda: salir(self)).pack(pady=10)
+
 
 
 class Retir_abon(tk.Frame):
@@ -264,5 +328,5 @@ class PageOne(tk.Frame):
 
 
 app = SeaofBTCapp()
-app.wm_geometry("900x700")
+app.wm_geometry("900x800")
 app.mainloop()

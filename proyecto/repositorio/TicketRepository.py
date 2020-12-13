@@ -15,7 +15,7 @@ def search_by_matricula(lista, matricula):
         return None
 
 def search_pendi(lista):
-    result = list(filter(lambda ticket: ticket.coste == 0, lista))
+    result = list(filter(lambda ticket: ticket.fechaSalida == None, lista))
     if len(result) >= 1:
         return result
     else:

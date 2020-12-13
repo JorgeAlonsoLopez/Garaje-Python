@@ -6,6 +6,7 @@ class Ticket():
         self.__matricula = matricula
         self.__plaza = plaza
         self.__coste = 0
+        self.__cambio = 0
         self.__pin = random.randrange(100000,1000000)
 
     @property
@@ -15,6 +16,14 @@ class Ticket():
     @fechaEntrada.setter
     def fechaEntrada(self, fechaEntrada):
         self.__fechaEntrada = fechaEntrada
+
+    @property
+    def cambio(self):
+        return self.__cambio
+
+    @cambio.setter
+    def cambio(self, cambio):
+        self.__cambio = cambio
 
     @property
     def fechaSalida(self):

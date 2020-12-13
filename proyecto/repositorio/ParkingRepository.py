@@ -11,7 +11,7 @@ def search_plaza_by_name(parking, nombre):
         result = list(filter(lambda PlazaMin: PlazaMin.nombre == nombre, parking.listaMoviReduc))
 
     if len(result) == 1:
-        return result
+        return result[0]
     else:
         return None
 

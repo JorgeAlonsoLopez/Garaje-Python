@@ -162,21 +162,15 @@ def retirar_vehiculo(matricula, nombre_plaza, pin, parking, lista_tick):
     plaza = search_plaza_by_name(parking, nombre_plaza)
     if plaza != None:
         tick = serv_tick.search_by_matricula(lista_tick, matricula)
-
         if tick != None:
-            while pin != tick.pin:
-                pin = pedir_pin_fallo()
-            serv_tick.pagar_ticket(nombre_plaza, parking, tick)
-            tick.fechaSalida = datetime.now()
-            tick.plaza.ocupado = False
-            serv_tick.pintar_ticket(tick)
-            print("El vehículo se ha retirado con éxito.")
-            print("Gracias por usar nuestros servicios.")
-        else:
-          print("No ha sido posible la retirada no nos consta su vehiculo en el sistema.")
+            if pin == tick.pin:
+                #serv_tick.pagar_ticket(nombre_plaza, parking, tick)
+                tick.fechaSalida = datetime.now()
+                plaza.ocupado = False
+                plaza.vehiculo=None
+                tick.plaza = plaza
+                #serv_tick.pintar_ticket(tick)
 
-    else:
-        print("No se puede proceder con la operación.")
 
 
 def retirar_vehiculo_abonado(matricula, nombre_plaza, lista_abonos, pin):

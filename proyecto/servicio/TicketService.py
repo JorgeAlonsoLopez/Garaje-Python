@@ -20,30 +20,20 @@ def load_file():
     return repo.load_file()
 
 
-def pagar_ticket(nombre_plaza, parking, ticket):
-
+def pagar_ticket(nombre_plaza, parking, ticket, dinero):
+    ok = False
     plaza = park_serv.search_plaza_by_name(parking, nombre_plaza)
     if(plaza != None):
-        correcto = False
         actual=datetime.now()
         min=(ceil((actual-ticket.fechaEntrada).total_seconds()/60))
         precio = min * plaza.coste
-        while not correcto:
-            try:
-                print(f"El precio a pagar son: {precio} €")
-                dinero = int(input("Inserte el dinero, en euros(€), sin céntimos. "))
-                if dinero >= 0:
-                    raise ValueError
-                if dinero >= precio:
-                    correcto = True
-                    ticket.coste = precio
-                    print(f"El cambio es: {round(dinero - precio,2)} €")
-                else:
-                    print("La cantidad es menor a la esperada. ")
-            except ValueError:
-                print("La cantidad a insertar debe ser superior o igual a 0 €.")
-                print("Se volverán a pedir los datos")
-
+        if dinero >= precio:
+            ok = True
+            ticket.coste = precio
+            ticket.cambio = round(dinero - precio,2)
+            return ok
+        else:
+            return ok
 
 def pedir_fecha(msg):
 
@@ -105,10 +95,10 @@ def pintar_ticket(ticket):
     res += f"PIN: {ticket.pin} \n"
     if ticket.coste != 0:
         res += f"Coste: {ticket.coste} €\n"
-
+        res += f"Cambio: {ticket.cambio} €\n"
     if ticket.fechaSalida != None:
         res += f"Fecha y hora de salida: {ticket.fechaSalida.strftime('%d-%m-%Y  %H:%M:%S')} \n"
-
+        res += "Gracias por usar nuestros servicios\n"
     res += "**********************************\n"
     return res
 
