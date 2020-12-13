@@ -97,20 +97,20 @@ def facturacion(listado_ticket):
     return round(total,2)
 
 def pintar_ticket(ticket):
-
-    print("*********************************")
-    print(f"Matrícula del vehículo: {ticket.matricula} ")
-    print(f"Plaza del parking: {ticket.plaza.nombre} ")
-    print(f"Fecha y hora de estacionamiento: {ticket.fechaEntrada.strftime('%d-%m-%Y  %H:%M:%S')} ")
-    print(f"PIN: {ticket.pin} ")
+    res=""
+    res += "*********************************\n"
+    res += f"Matrícula del vehículo: {ticket.matricula} \n"
+    res += f"Plaza del parking: {ticket.plaza.nombre} \n"
+    res += f"Fecha y hora de estacionamiento: {ticket.fechaEntrada.strftime('%d-%m-%Y  %H:%M:%S')} \n"
+    res += f"PIN: {ticket.pin} \n"
     if ticket.coste != 0:
-        print(f"Coste: {ticket.coste} €")
+        res += f"Coste: {ticket.coste} €\n"
 
     if ticket.fechaSalida != None:
-        print(f"Fecha y hora de salida: {ticket.fechaSalida.strftime('%d-%m-%Y  %H:%M:%S')} ")
+        res += f"Fecha y hora de salida: {ticket.fechaSalida.strftime('%d-%m-%Y  %H:%M:%S')} \n"
 
-    print("**********************************")
-
+    res += "**********************************\n"
+    return res
 
 
 

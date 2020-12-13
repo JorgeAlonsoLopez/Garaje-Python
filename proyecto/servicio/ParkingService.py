@@ -36,21 +36,24 @@ def mostrar_info_gen(parking):
     res = ""
     cont = 0
     for plaza in parking.listaCoches:
-        if plaza.reservado == False and plaza.ocupado == False:
-            cont += 1
+        if plaza.reservado == False:
+            if plaza.ocupado == False:
+                cont += 1
     res += f"Para las plazas de coches, hay el siguiente número de plazas libres: {cont} \n"
     cont = 0
     for plaza in parking.listaMotos:
-        if plaza.reservado == False and plaza.ocupado == False:
-            cont += 1
+        if plaza.reservado == False:
+            if plaza.ocupado == False:
+                cont += 1
     res += f"Para las plazas de motos, hay el siguiente número de plazas libres: {cont} \n"
     cont = 0
-    for plaza in parking.listaMoviReducf:
-        if plaza.reservado == False and plaza.ocupado == False:
-            cont += 1
+    for plaza in parking.listaMoviReduc:
+        if plaza.reservado == False:
+            if plaza.ocupado == False:
+                cont += 1
     res += f"Para las plazas de movilidad reducida, hay el siguiente número de plazas libres: {cont} \n"
 
-    return print(res)
+    return res
 
 
 def asignar_plaza(parking, tipo):
@@ -67,7 +70,7 @@ def asignar_plaza(parking, tipo):
                 plaza_libre = plaza
                 encontrado = True
     elif tipo ==3:
-        for plaza in parking.listaMoviReducf:
+        for plaza in parking.listaMoviReduc:
             if plaza.reservado == False and plaza.ocupado == False and encontrado == False:
                 plaza_libre = plaza
                 encontrado = True
@@ -85,7 +88,7 @@ def is_free_space(tipo, parking):
             if plaza.reservado == False and plaza.ocupado == False:
                 resl = True
     elif tipo ==3:
-        for plaza in parking.listaMoviReducf:
+        for plaza in parking.listaMoviReduc:
             if plaza.reservado == False and plaza.ocupado == False:
                 resl = True
     return resl
@@ -102,11 +105,13 @@ def depositar_vehiculo(matricula, tipo, lista_tick, parking):
         ticket.pin = random.randrange(100000,1000000)
         serv_tick.add(lista_tick,ticket)
         plaza.ocupado = True
-        serv_tick.pintar_ticket(ticket)
+        #serv_tick.pintar_ticket(ticket)
         if result:
-            return "Se ha finalizado el aparcado el vehículo sin problemas."
+            res = "Se ha finalizado el aparcado el vehículo sin problemas."
+            return res, ticket
     else:
-        return "No se puede aparcar, no hay sitio."
+        res = "No se puede aparcar, no hay sitio."
+        return res, None
 
 def depositar_vehiculo_abonado(dni, matricula, lista_abonos):
     abono = serv_abo.search_by_dni(lista_abonos,dni)

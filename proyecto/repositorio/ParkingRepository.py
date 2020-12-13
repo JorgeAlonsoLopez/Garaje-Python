@@ -22,7 +22,7 @@ def save_file(parking):
     fichero.close()
 
 def load_file():
-    parking = Parking
+    parking = Parking()
     try:
         fichero = open('parking.pckl','rb')
         parking = pickle.load(fichero)
