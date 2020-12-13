@@ -23,13 +23,13 @@ def mostrar_info_detll(parking):
         lista.append(plaza)
     for plaza in parking.listaMotos:
         lista.append(plaza)
-    for plaza in parking.listaMoviReducf:
+    for plaza in parking.listaMoviReduc:
         lista.append(plaza)
 
     for i in lista:
-        res += str(i)+"\n"
+        res += str(i)+"\n\n"
 
-    return print(res)
+    return res
 
 def mostrar_info_gen(parking):
 

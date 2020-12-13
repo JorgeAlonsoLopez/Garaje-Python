@@ -1,6 +1,8 @@
 import sys
 import os
 import tkinter as tk
+from tkinter import ttk
+from tkcalendar import *
 from datetime import datetime
 from math import ceil
 from tkinter import messagebox
@@ -18,7 +20,7 @@ parking = park_serv.load_file()
 LARGE_FONT= ("Verdana", 10)
 NEGRITA= ("Verdana", 12, "bold")
 TITULO= ("Verdana", 15, "bold")
-PASSW = "1234"
+PASSW = "1"
 class SeaofBTCapp(tk.Tk):
     def __init__(self, *args, **kwargs):
 
@@ -31,7 +33,8 @@ class SeaofBTCapp(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, Ingrs_clien, Ingrs_abon, Opcion_admin, Retir_abon, Retir_client):
+        for F in (StartPage, Ingrs_clien, Ingrs_abon, Opcion_admin, Retir_abon, Retir_client, Estado_park, Fact_tik,
+                  Cobro_abon, Caduc_anyo, Caduc_dias, Nuevo_abon, Edit_abon, Renov_abon, Elimn_abon):
 
             frame = F(container, self)
 
@@ -169,10 +172,6 @@ class Ingrs_abon(tk.Frame):
                             command=lambda: controller.show_frame(StartPage))
         button1.pack()
 
-        button2 = tk.Button(self, text="Page Two",
-                            command=lambda: controller.show_frame(PageTwo))
-        button2.pack()
-
 
 class Retir_client(tk.Frame):
 
@@ -268,31 +267,250 @@ class Retir_abon(tk.Frame):
                             command=lambda: controller.show_frame(StartPage))
         button1.pack()
 
-        button2 = tk.Button(self, text="Page Two",
-                            command=lambda: controller.show_frame(PageTwo))
-        button2.pack()
-
 class Opcion_admin(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page One!!!", font=LARGE_FONT)
-        label.pack(pady=10,padx=10)
 
-        button1 = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(StartPage))
-        button1.pack()
+        label = tk.Label(self, text="Bienvenido a la zona de administración", font=LARGE_FONT).pack(pady=20)
 
-        button2 = tk.Button(self, text="Page Two",
-                            command=lambda: controller.show_frame(PageTwo))
-        button2.pack()
-
-
-
+        frame_0=tk.Frame(self)
+        frame_0.pack(pady=5)
+        frame_1=tk.Frame(self)
+        frame_1.pack(pady=5)
+        frame_2=tk.Frame(self)
+        frame_2.pack(pady=5)
+        frame_3=tk.Frame(self)
+        frame_3.pack(pady=5)
 
 
+        label_tex_cli1 = tk.Label(frame_0, text="Estado del parking", font=LARGE_FONT).pack(pady=15)
+
+        button_estado_park = tk.Button(frame_0, text="Comprobar el estado del parking", command=lambda: controller.show_frame(Estado_park))\
+            .pack(padx=5, pady=5)
 
 
+        label_tex_cli2 = tk.Label(frame_1, text="Facturación y cobros", font=LARGE_FONT).pack(pady=15)
+
+        button_fact = tk.Button(frame_1, text="Facturación de tickets ",command=lambda: controller.show_frame(Fact_tik)).pack(padx=5, pady=5, side=tk.LEFT)
+        button_cob_abon = tk.Button(frame_1, text="Cobros de abonados", command=lambda: controller.show_frame(Cobro_abon)).pack(padx=5, pady=5, side=tk.LEFT)
+
+
+        label_tex_cli3 = tk.Label(frame_2, text="Consultar caducidad de abonos", font=LARGE_FONT).pack(pady=15)
+
+        button_caduc_anyo = tk.Button(frame_2, text="Año y mes determinados", command=lambda: controller.show_frame(Caduc_anyo)).pack(padx=5, pady=5, side=tk.LEFT)
+        button_caduc_10 = tk.Button(frame_2, text="Próximos 10 días", command=lambda: controller.show_frame(Caduc_dias)).pack(padx=5, pady=5, side=tk.LEFT)
+
+
+
+        label_tex_cli4 = tk.Label(frame_3, text="Gestión de abonos", font=LARGE_FONT).pack(pady=15)
+
+        button_new_ab = tk.Button(frame_3, text="Crear abono", command=lambda: controller.show_frame(Nuevo_abon)).pack(padx=5, pady=5, side=tk.LEFT)
+        button_edit = tk.Button(frame_3, text="Editar datos del abonado", command=lambda: controller.show_frame(Edit_abon)).pack(padx=5, pady=5, side=tk.LEFT)
+        button_renov = tk.Button(frame_3, text="Renovar abono", command=lambda: controller.show_frame(Renov_abon)).pack(padx=5, pady=5, side=tk.LEFT)
+        button_delet = tk.Button(frame_3, text="Eliminar abono", command=lambda: controller.show_frame(Elimn_abon)).pack(padx=5, pady=5, side=tk.LEFT)
+
+        def salir(self):
+            python = sys.executable
+            os.execl(python, python, * sys.argv)
+            return controller.show_frame(StartPage)
+
+        boton2 = tk.Button(self, text="Salir", font=LARGE_FONT, command=lambda: salir(self)).pack(pady=50)
+
+class Estado_park(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        canvas = tk.Canvas(self)
+        canvas.pack(fill="both", expand="yes", padx=10, pady=10)
+
+        scroll_bar = ttk.Scrollbar(canvas, orient="vertical", command=canvas.yview)
+        scroll_bar.pack(side=tk.RIGHT, fill="y")
+
+        canvas.configure(yscrollcommand=scroll_bar.set)
+
+        canvas.bind("<Configure>", lambda e: canvas.configure(scrollregion = canvas.bbox("all")))
+
+        main_frame = tk.Frame(canvas)
+
+        canvas.create_window((0,0), window=main_frame, anchor="nw")
+
+        plz=tk.StringVar()
+        plz.set(park_serv.mostrar_info_detll(parking))
+
+        label_tex_cli4 = tk.Label(main_frame, text="Información detallada del parking", font=LARGE_FONT).pack(pady=15)
+
+        label_tex = tk.Label(main_frame, textvariable=plz, font=LARGE_FONT).pack(pady=5)
+
+        def salir(self):
+            python = sys.executable
+            os.execl(python, python, * sys.argv)
+            return controller.show_frame(StartPage)
+
+        boton2 = tk.Button(self, text="Salir", font=LARGE_FONT, command=lambda: salir(self)).pack(pady=50)
+
+class Fact_tik(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        hor = tk.StringVar()
+        min = tk.StringVar()
+        f1 = tk.StringVar()
+        f2 = tk.StringVar()
+        sol = tk.StringVar()
+        fail = tk.StringVar()
+        v=tk.IntVar()
+        res = tk.StringVar()
+        text=tk.StringVar()
+
+
+        def fechas(err):
+            fecha1= None
+            fecha2=None
+
+            try:
+                if f1.get() != "" and f2.get() != "":
+                    anio1 = int(f1.get()[6:10])
+                    mes1= int(f1.get()[0:2])
+                    dia1= int(f1.get()[3:5])
+                    hor1= int(f1.get()[11:13])
+                    min1= int(f1.get()[14:16])
+                    if dia1 > 31 or dia1 < 1:
+                        raise ValueError
+                    if mes1 > 12 or mes1 < 1:
+                        raise ValueError
+                    if anio1 < 2019 :
+                        raise ValueError
+                    if hor1 > 23 or hor1 < 0:
+                        raise ValueError
+                    if min1 > 59 or min1 < 0:
+                        raise ValueError
+                    fecha1 = datetime(anio1, mes1, dia1, hor1, min1)
+                    anio2 = int(f2.get()[6:10])
+                    mes2= int(f2.get()[0:2])
+                    dia2= int(f2.get()[3:5])
+                    hor2= int(f2.get()[11:13])
+                    min2= int(f2.get()[14:16])
+                    if dia2 > 31 or dia2 < 1:
+                        raise ValueError
+                    if mes2 > 12 or mes2 < 1:
+                        raise ValueError
+                    if anio2 < 2019 :
+                        raise ValueError
+                    if hor2 > 23 or hor2 < 0:
+                        raise ValueError
+                    if min2 > 59 or min2 < 0:
+                        raise ValueError
+                    fecha2 = datetime(anio2, mes2, dia2, hor2, min2)
+                    fail.set("")
+                else:
+                    fail.set( "Tiene que completarse las dos fechas")
+            except ValueError:
+                fail.set("Los datos tienen que ser enteros, para los meses tiene que estar entre 1 y 12 para los meses, de 1 a 31 para días,\n" \
+                    "de 0 a 11 para horas, de 0 a 59 para minutos y años superiores al 2019.")
+
+            return fecha1, fecha2
+
+        def calculo(err, sol):
+            fecha1, fecha2 = fechas(err)
+            total, dinero = tick_serv.facturacion(lista_tickets, fecha1, fecha2)
+            sol.set(f"Se han obtenido {dinero} €  entre las dos fechas con el cobro de {total} tichets")
+
+        label_tex = tk.Label(self, text="Establezca las dos fechas entre las que se a a buscar la facturación de los tickets", font=LARGE_FONT).pack(pady=20)
+
+        frame_opt=tk.Frame(self)
+        frame_opt.pack(pady=20)
+
+        tk.Radiobutton(frame_opt, text="Fecha de inicio", variable=v, value=1).pack(side=tk.LEFT, padx = 10)
+        tk.Radiobutton(frame_opt, text="Fecha de fin", variable=v, value=2).pack(side=tk.LEFT, padx = 10)
+
+        cal1 = Calendar(self, selectmode="day",date_pattern='mm/dd/y', year=2020, month=12, day=10)
+        cal1.pack(pady=20)
+
+        def fecha():
+            if v.get()==1:
+                f1.set(cal1.get_date()+"-"+hor.get()+":"+min.get())
+            else:
+                f2.set(cal1.get_date()+"-"+hor.get()+":"+min.get())
+
+        frame_1=tk.Frame(self)
+        frame_1.pack(pady=5)
+
+        label_tex = tk.Label(frame_1, text="Hora (24H) ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+        Inp_h1 = tk.Entry(frame_1, textvariable=hor).pack(padx=5, pady=5, side=tk.LEFT)
+        label_tex = tk.Label(frame_1, text="Minutos ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+        Inp_m1 = tk.Entry(frame_1, textvariable=min).pack(padx=5, pady=5, side=tk.LEFT)
+
+        botonFec1 = tk.Button(self, text="Confrimar fecha",command=fecha, font=LARGE_FONT).pack(pady=10)
+
+        frame_2=tk.Frame(self)
+        frame_2.pack(pady=5)
+        label_tex = tk.Label(frame_2, text="La fecha y hora de inicio es: ", font=LARGE_FONT).pack(pady=5, side=tk.LEFT)
+        fech1 = tk.Label(frame_2, textvariable=f1)
+        fech1.pack(side=tk.LEFT)
+
+        frame_3=tk.Frame(self)
+        frame_3.pack(pady=5)
+        label_tex = tk.Label(frame_3, text="La fecha y hora de fin es: ", font=LARGE_FONT).pack(pady=5, side=tk.LEFT)
+        fech2 = tk.Label(frame_3, textvariable=f2)
+        fech2.pack(side=tk.LEFT)
+
+        botonFec1 = tk.Button(self, text="Obtener datos",command= lambda : calculo(fail, sol), font=LARGE_FONT).pack(pady=10)
+
+        label_tex = tk.Label(self, textvariable=fail, font=LARGE_FONT).pack()
+
+        label_tex = tk.Label(self, textvariable=sol, font=LARGE_FONT).pack()
+
+        def salir(self):
+            python = sys.executable
+            os.execl(python, python, * sys.argv)
+            return controller.show_frame(StartPage)
+
+        boton2 = tk.Button(self, text="Salir", font=LARGE_FONT, command=lambda: salir(self)).pack(pady=50)
+
+class Cobro_abon(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+
+class Caduc_anyo(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+
+class Caduc_dias(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+
+
+class Nuevo_abon(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+
+class Edit_abon(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+
+class Renov_abon(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+
+class Elimn_abon(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
 
 
 

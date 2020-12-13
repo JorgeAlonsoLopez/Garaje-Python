@@ -64,27 +64,19 @@ def pedir_fecha(msg):
             print("Se volverán a pedir los datos")
     return fecha
 
-def datos_facturacion():
-    fecha1 = pedir_fecha("inicio")
-    fecha2 = pedir_fecha("fin")
-    return fecha1, fecha2
 
-
-
-
-
-
-def facturacion(listado_ticket):
-    fecha1, fecha2 = datos_facturacion()
+def facturacion(listado_ticket, fecha1, fecha2):
     aux=[]
     total=0
+    count=0
     for ticket in listado_ticket:
         if ticket.fechaEntrada >= fecha1 and ticket.fechaEntrada <= fecha2:
             aux.append(ticket)
+            count += 1
     for i in aux:
         total += i
 
-    return round(total,2)
+    return count,round(total,2)
 
 def pintar_ticket(ticket):
     res=""

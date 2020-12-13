@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkcalendar import *
+from tkinter import ttk
 from datetime import datetime
 from math import ceil
 from tkinter import messagebox
@@ -21,96 +23,118 @@ root = tk.Tk()
 root.geometry("900x800")
 
 
-
-matr=tk.StringVar()
-plz=tk.StringVar()
-pin=tk.StringVar()
-ticketInf=tk.StringVar()
-v=tk.IntVar()
+hor = tk.StringVar()
+min = tk.StringVar()
+f1 = tk.StringVar()
+f2 = tk.StringVar()
+sol = tk.StringVar()
 fail = tk.StringVar()
-exito = tk.StringVar()
-fin = False
-pago = False
-precio_mostrar=tk.StringVar()
-dinero = tk.IntVar()
+v=tk.IntVar()
+res = tk.StringVar()
+text=tk.StringVar()
 
 
-#exito.set("El vehículo se ha retirado con éxito.\nGracias por usar nuestros servicios.")
+def fechas(err):
+    fecha1= None
+    fecha2=None
 
-def calculo(pago, fail, precio_mostrar):
-    if plz.get() != "" and matr.get() != "" and pin.get() != "":
-        plaza = park_serv.search_plaza_by_name(parking, plz.get().upper())
-        tick = tick_serv.search_by_matricula(lista_tickets, matr.get().upper())
-        if plaza != None and tick != None and tick.pin == int(pin.get()):
+    try:
+        if f1.get() != "" and f2.get() != "":
+            anio1 = int(f1.get()[6:10])
+            mes1= int(f1.get()[0:2])
+            dia1= int(f1.get()[3:5])
+            hor1= int(f1.get()[11:13])
+            min1= int(f1.get()[14:16])
+            if dia1 > 31 or dia1 < 1:
+                raise ValueError
+            if mes1 > 12 or mes1 < 1:
+                raise ValueError
+            if anio1 < 2019 :
+                raise ValueError
+            if hor1 > 23 or hor1 < 0:
+                raise ValueError
+            if min1 > 59 or min1 < 0:
+                raise ValueError
+            fecha1 = datetime(anio1, mes1, dia1, hor1, min1)
+            anio2 = int(f2.get()[6:10])
+            mes2= int(f2.get()[0:2])
+            dia2= int(f2.get()[3:5])
+            hor2= int(f2.get()[11:13])
+            min2= int(f2.get()[14:16])
+            if dia2 > 31 or dia2 < 1:
+                raise ValueError
+            if mes2 > 12 or mes2 < 1:
+                raise ValueError
+            if anio2 < 2019 :
+                raise ValueError
+            if hor2 > 23 or hor2 < 0:
+                raise ValueError
+            if min2 > 59 or min2 < 0:
+                raise ValueError
+            fecha2 = datetime(anio2, mes2, dia2, hor2, min2)
             fail.set("")
-            actual=datetime.now()
-            min=(ceil((actual-tick.fechaEntrada).total_seconds()/60))
-            precio = min * plaza.coste
-            precio_mostrar.set("El coste es:(€)\n"+str(round(precio,2)))
         else:
-            fail.set("No se puede proceder con los datos aprotados, inténtelo de nuevo.")
-    else:
-        fail.set("No se puede proceder con los datos aprotados, inténtelo de nuevo.")
+            fail.set( "Tiene que completarse las dos fechas")
+    except ValueError:
+        fail.set("Los datos tienen que ser enteros, para los meses tiene que estar entre 1 y 12 para los meses, de 1 a 31 para días,\n" \
+            "de 0 a 11 para horas, de 0 a 59 para minutos y años superiores al 2019.")
 
-def retirar():
-    if plz.get() != "" and matr.get() != "" and pin.get() != "":
-        plaza = park_serv.search_plaza_by_name(parking, plz.get().upper())
-        tick = tick_serv.search_by_matricula(lista_tickets, matr.get().upper())
+    return fecha1, fecha2
 
-        if plaza != None and tick != None and dinero.get() >= 0:
-
-            ok = tick_serv.pagar_ticket(plz.get().upper(),parking,tick, dinero.get())
-            if ok:
-                park_serv.retirar_vehiculo(matr.get().upper(),plz.get().upper(),int(pin.get()),parking,lista_tickets)
-                ticketInf.set(tick_serv.pintar_ticket(tick))
-            else:
-                ticketInf.set("La cantidad insertada no es suficiente")
-
-
-def pagar(pago, tick, plaz):
-    pago = True
-
-
+def calculo(err, sol):
+    fecha1, fecha2 = fechas(err)
+    total, dinero = tick_serv.facturacion(lista_tickets, fecha1, fecha2)
+    sol.set(f"Se han obtenido {dinero} €  entre las dos fechas con el cobro de {total} tichets")
 
 label_tex = tk.Label(root, text="Inserte la matrícula del vehículo, el nombre de la plaza y pin", font=LARGE_FONT).pack(pady=20)
-
-""""
-label_tex = tk.Label(root, text="Tipo", font=LARGE_FONT).pack(pady=5)
 
 frame_opt=tk.Frame(root)
 frame_opt.pack(pady=20)
 
-tk.Radiobutton(frame_opt, text="Coche", variable=v, value=1).pack(side=tk.LEFT, padx = 20)
-tk.Radiobutton(frame_opt, text="Moto", variable=v, value=2).pack(side=tk.LEFT, padx = 20)
-tk.Radiobutton(frame_opt, text="Movilidad reducida",variable=v, value=3).pack(side=tk.LEFT, padx = 20)
-"""
+tk.Radiobutton(frame_opt, text="Fecha de inicio", variable=v, value=1).pack(side=tk.LEFT, padx = 10)
+tk.Radiobutton(frame_opt, text="Fecha de fin", variable=v, value=2).pack(side=tk.LEFT, padx = 10)
 
-label_tex = tk.Label(root, text="Matrícula", font=LARGE_FONT).pack(pady=10)
+cal1 = Calendar(root, selectmode="day",date_pattern='mm/dd/y', year=2020, month=12, day=10)
+cal1.pack(pady=20)
 
-cuadro = tk.Entry(root, textvariable=matr).pack(padx=5)
+def fecha():
+    if v.get()==1:
+        f1.set(cal1.get_date()+"-"+hor.get()+":"+min.get())
+    else:
+        f2.set(cal1.get_date()+"-"+hor.get()+":"+min.get())
 
-label_tex = tk.Label(root, text="Nombre de la plaza", font=LARGE_FONT).pack(pady=10)
+frame_1=tk.Frame(root)
+frame_1.pack(pady=5)
 
-cuadro = tk.Entry(root, textvariable=plz).pack(padx=5)
+label_tex = tk.Label(frame_1, text="Hora (24H) ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+Inp_h1 = tk.Entry(frame_1, textvariable=hor).pack(padx=5, pady=5, side=tk.LEFT)
+label_tex = tk.Label(frame_1, text="Minutos ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+Inp_m1 = tk.Entry(frame_1, textvariable=min).pack(padx=5, pady=5, side=tk.LEFT)
 
-label_tex = tk.Label(root, text="PIN", font=LARGE_FONT).pack(pady=10)
+botonFec1 = tk.Button(root, text="Confrimar fecha",command=fecha, font=LARGE_FONT).pack(pady=10)
 
-cuadro = tk.Entry(root, textvariable=pin).pack(padx=5)
+frame_2=tk.Frame(root)
+frame_2.pack(pady=5)
+label_tex = tk.Label(frame_2, text="La fecha y hora de inicio es: ", font=LARGE_FONT).pack(pady=5, side=tk.LEFT)
+fech1 = tk.Label(frame_2, textvariable=f1)
+fech1.pack(side=tk.LEFT)
 
-boton1 = tk.Button(root, text="Calcular precio", font=LARGE_FONT, command=lambda :calculo(pago, fail, precio_mostrar)).pack(pady=5)
+frame_3=tk.Frame(root)
+frame_3.pack(pady=5)
+label_tex = tk.Label(frame_3, text="La fecha y hora de fin es: ", font=LARGE_FONT).pack(pady=5, side=tk.LEFT)
+fech2 = tk.Label(frame_3, textvariable=f2)
+fech2.pack(side=tk.LEFT)
+
+botonFec1 = tk.Button(root, text="Obtener datos",command= lambda : calculo(fail, sol), font=LARGE_FONT).pack(pady=10)
+
+
 
 label_tex = tk.Label(root, textvariable=fail, font=LARGE_FONT).pack()
 
-label_tex = tk.Label(root, textvariable=exito, font=LARGE_FONT).pack()
+label_tex = tk.Label(root, textvariable=sol, font=LARGE_FONT).pack()
 
-label_tex = tk.Label(root, textvariable=precio_mostrar, font=LARGE_FONT).pack(pady=5)
-label_tex = tk.Label(root, text="Inserte la cantidad establecida (no se admiten céntimos)", font=LARGE_FONT).pack(pady=10)
-cuadro = tk.Entry(root, textvariable=dinero).pack(padx=5)
-boton2 = tk.Button(root, text="Confirmar la retirada", font=LARGE_FONT, command=retirar).pack(pady=20)
 
-label_tex = tk.Label(root, textvariable=ticketInf, font=LARGE_FONT).pack(pady=5)
 
-boton2 = tk.Button(root, text="Salir", font=LARGE_FONT).pack(pady=10)
-
+boton2 = tk.Button(root, text="Salir", font=LARGE_FONT).pack(pady=30)
 
 root.mainloop()
