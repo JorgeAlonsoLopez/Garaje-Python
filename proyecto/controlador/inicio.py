@@ -26,43 +26,7 @@ root.geometry("900x800")
 
 
 
-
-sol = tk.StringVar()
-fail = tk.StringVar()
-f1 = tk.StringVar()
-
-def obt_fecha(lista_abonos):
-    lista = []
-    fallo = True
-    faill=""
-    soll=""
-    fallo ,lista, faill, soll = abon_serv.obtener_lista_cad(lista_abonos,cal1.get_date()[0:2], cal1.get_date()[6:10])
-    fail.set(faill)
-    sol.set(soll)
-    return fallo, lista
-
-def consulta(sol):
-    fallo, lista = obt_fecha(lista_abonos)
-    res=""
-    res = abon_serv.listar_caducidad_mes(fallo, lista)
-    sol.set(res)
-
-label_tex = tk.Label(root, text="Inserte el DNI del abonado en cuestión", font=LARGE_FONT).pack(pady=10)
-def fecha():
-    f1.set(cal1.get_date()[0:2] + " - " + cal1.get_date()[6:10])
-
-cal1 = Calendar(root, selectmode="day",date_pattern='mm/dd/y', year=2020, month=12, day=10)
-cal1.pack(pady=20)
-
-botonFec1 = tk.Button(root, text="Confrimar fecha",command=fecha, font=LARGE_FONT).pack(pady=10)
-fech1 = tk.Label(root, textvariable=f1).pack()
-
-boton = tk.Button(root, text="Consultar caducidad de abonos",command= lambda : consulta(sol), font=LARGE_FONT).pack(pady=20)
-
-label_tex = tk.Label(root, textvariable=fail, font=LARGE_FONT).pack()
-
-label_tex = tk.Label(root, textvariable=sol, font=LARGE_FONT).pack()
-
+label_tex = tk.Label(root, text=abon_serv.listar_caducidad_proximos_dias(lista_abonos), font=LARGE_FONT).pack(pady=30)
 
 
 boton2 = tk.Button(root, text="Salir", font=LARGE_FONT).pack(pady=20)

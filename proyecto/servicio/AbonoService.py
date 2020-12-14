@@ -101,20 +101,21 @@ def tipo_abono(opt):
 
 
 def listar_caducidad_proximos_dias(listado_abonos):
+    res = ""
     lista = []
     hoy = datetime.now()
     tope = hoy + timedelta(days=10)
     for abono in listado_abonos:
         if abono.fechaFinal >= hoy and abono.fechaFinal <= tope:
             lista.append(abono)
-    print(f"El número de abonos que caducan en los próximos 10 días son: {len(lista)}")
+    res += f"El número de abonos que caducan en los próximos 10 días son: {len(lista)}\n\n"
     if len(lista) > 0:
-        print("Los abonos que caducan son los siguinetes: ")
+        res +="Los abonos que caducan son los siguinetes: \n\n"
         for abono in lista:
-            print(f"El abono perteneciente a {abono.cliente.nombre} {abono.cliente.apellidos}, "
-            f"con una duración de {abono.meses} mes/es, emitido el {abono.fechaInicial.strftime('%d-%m-%Y')} "
-            f"para el vehículo con matrícula {abono.cliente.vehiculo.matricula}")
-
+            res += f"El abono perteneciente a {abono.cliente.nombre} {abono.cliente.apellidos}, " \
+                   f"con una duración de {abono.meses} mes/es, emitido el {abono.fechaInicial.strftime('%d-%m-%Y')} " \
+            f"para el vehículo con matrícula {abono.cliente.vehiculo.matricula}\n\n"
+    return res
 
 def obtener_lista_cad(lista_abonos,mes, anio):
 

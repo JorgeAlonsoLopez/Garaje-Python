@@ -556,6 +556,14 @@ class Caduc_dias(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        label_tex = tk.Label(self, text=abon_serv.listar_caducidad_proximos_dias(lista_abonos), font=LARGE_FONT).pack(pady=30)
+
+        def salir(self):
+            python = sys.executable
+            os.execl(python, python, * sys.argv)
+            return controller.show_frame(StartPage)
+
+        boton2 = tk.Button(self, text="Salir", font=LARGE_FONT, command=lambda: salir(self)).pack(pady=50)
 
 
 
