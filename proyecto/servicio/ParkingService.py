@@ -113,50 +113,38 @@ def depositar_vehiculo(matricula, tipo, lista_tick, parking):
         res = "No se puede aparcar, no hay sitio."
         return res, None
 
-def depositar_vehiculo_abonado(dni, matricula, lista_abonos):
+def modifPlz(ocupado, vehiculo, nombre, parking):
+    plaza = search_plaza_by_name(parking, nombre)
+    plaza.ocupado = ocupado
+    plaza.vehiculo = vehiculo
+    
+
+def depositar_vehiculo_abonado(dni, matricula, lista_abonos, parking):
+    res = ""
     abono = serv_abo.search_by_dni(lista_abonos,dni)
     if abono != None:
-        if abono.fechaInicial <= datetime.now():
-            if abono.cliente.vehiculo.matricula == matricula :
-                if abono.plaza.ocupado == False:
-                    abono.plaza.ocupado = True
-                    abono.plaza.vehiculo = abono.cliente.vehiculo
-                    print("El vehículo se ha aparcado con éxito.")
-                    print("Gracias por usar nuestros servicios.")
+        if abono.fechaFinal >= datetime.now():
+            if abono.fechaInicial <= datetime.now():
+                if abono.cliente.vehiculo.matricula == matricula :
+                    if abono.plaza.ocupado == False:
+                        abono.plaza.ocupado = True
+                        #plaza = search_plaza_by_name(parking, abono.plaza.nombre)
+                        abono.plaza.vehiculo = abono.cliente.vehiculo
+                        #plaza = abono.plaza
+                        modifPlz(True, abono.cliente.vehiculo, abono.plaza.nombre, parking)
+                        res +="El vehículo se ha aparcado con éxito.\n"
+                        res +="Gracias por usar nuestros servicios."
+                    else:
+                       res +="Puede que se le haya olvidado, pero ya a aparcado."
                 else:
-                    print("Puede que se le haya olvidado, pero ya a aparcado.")
+                    res +="No se puede proceder con los datos aportados."
             else:
-                print("No se puede proceder con los datos aportados.")
+                res +="Todavía no ha entrado en vigor el abono, tiene que esperar a la fecha establecida"
         else:
-            print("Todavía no ha entrado en vigor el abono, tiene que esperar a la fecha establecida")
+            res +="Su abono a caducado, va a tener que renovarlo"
     else:
-        print("No se puede proceder con los datos aportados.")
-
-def pedir_pin():
-    rep = True
-    while rep:
-        try:
-            pin = int(input("Inserte el pin."))
-            if pin < 100000 or pin > 999999:
-                raise ValueError
-            rep = False
-        except ValueError:
-            print("El pin debe sen un número entero entre 100000 y 999999.")
-            print("Se repite la petición")
-    return pin
-
-def pedir_pin_fallo():
-    rep = True
-    while rep:
-        try:
-            pin = int(input("Inserte el pin de nuevo, el proporcionado no es correcto."))
-            if pin < 100000 or pin > 999999:
-                raise ValueError
-            rep = False
-        except ValueError:
-            print("El pin debe sen un número entero entre 100000 y 999999.")
-            print("Se repite la petición")
-    return pin
+       res +="No se puede proceder con los datos aportados."
+    return res
 
 def retirar_vehiculo(matricula, nombre_plaza, pin, parking, lista_tick):
     plaza = search_plaza_by_name(parking, nombre_plaza)
@@ -164,31 +152,35 @@ def retirar_vehiculo(matricula, nombre_plaza, pin, parking, lista_tick):
         tick = serv_tick.search_by_matricula(lista_tick, matricula)
         if tick != None:
             if pin == tick.pin:
-                #serv_tick.pagar_ticket(nombre_plaza, parking, tick)
                 tick.fechaSalida = datetime.now()
                 plaza.ocupado = False
                 plaza.vehiculo=None
                 tick.plaza = plaza
-                #serv_tick.pintar_ticket(tick)
 
 
 
-def retirar_vehiculo_abonado(matricula, nombre_plaza, lista_abonos, pin):
+def retirar_vehiculo_abonado(matricula, nombre_plaza, lista_abonos, pin, parking):
+    res = ""
     abono = serv_abo.search_by_nombre_plaza(lista_abonos,nombre_plaza)
     if abono != None:
-        if abono.fechaInicial <= datetime.now():
-            if abono.cliente.vehiculo.matricula == matricula and abono.pin == pin:
-                if abono.plaza.ocupado == True:
-                    abono.plaza.ocupado = False
-                    abono.plaza.vehiculo = None
-                    print("El vehículo se ha retirado con éxito.")
-                    print("Gracias por usar nuestros servicios.")
+        if abono.fechaFinal >= datetime.now():
+            if abono.fechaInicial <= datetime.now():
+                if abono.cliente.vehiculo.matricula == matricula and abono.pin == pin:
+                    if abono.plaza.ocupado == True:
+                        plaza = search_plaza_by_name(parking, abono.plaza.nombre)
+                        abono.plaza.ocupado = False
+                        abono.plaza.vehiculo = None
+                        plaza = abono.plaza
+                        print("El vehículo se ha retirado con éxito.")
+                        print("Gracias por usar nuestros servicios.")
+                    else:
+                        print("Puede que se le haya olvidado, pero no ha guardado el vehículo.")
                 else:
-                    print("Puede que se le haya olvidado, pero no ha guardado el vehículo.")
+                    print("No se puede proceder con los datos aportados.")
             else:
-                print("No se puede proceder con los datos aportados.")
+                print("Todavía no ha entrado en vigor el abono, tiene que esperar a la fecha establecida")
         else:
-            print("Todavía no ha entrado en vigor el abono, tiene que esperar a la fecha establecida")
+            res +="Su abono a caducado, va a tener que renovarlo"
     else:
         print("No se puede proceder con los datos aportados.")
 

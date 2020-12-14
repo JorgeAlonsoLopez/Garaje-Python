@@ -31,7 +31,7 @@ def facturacion_anyo(lista_facturas, year):
                 recaudac += factura.coste
             recaudac = format(recaudac, ".2f")
             sol = f"Ha habido en el año seleccionado ({year}), un total de {contd}" \
-                  f" cobros de abonos por un valor de {recaudac} + €."
+                  f" cobros de abonos por un valor de {recaudac} €."
         else:
             sol = "No se ha encontrado ningún pago de abono perteneciente al año insertado"
     else:

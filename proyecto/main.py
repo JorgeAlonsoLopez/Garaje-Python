@@ -167,12 +167,42 @@ class Ingrs_abon(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page One!!!", font=LARGE_FONT)
-        label.pack(pady=10,padx=10)
 
-        button1 = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(StartPage))
-        button1.pack()
+        matr=tk.StringVar()
+        dni=tk.StringVar()
+        res=tk.StringVar()
+
+        def reservar(res):
+            resp =""
+
+            if dni.get() != "" and matr.get() != "":
+                resp = park_serv.depositar_vehiculo_abonado(dni.get().upper(), matr.get().upper(), lista_abonos, parking)
+                res.set(resp)
+                park_serv.save_file(parking)
+            else:
+                res.set("Los campos debes estar rellenos")
+
+        label_tex = tk.Label(self, text="Inserte la matrícula del vehículo y su DNI", font=LARGE_FONT).pack(pady=20)
+
+        frame1=tk.Frame(self)
+        frame1.pack(pady=20)
+
+        label_tex = tk.Label(frame1, text="Matrícula", font=LARGE_FONT).pack(pady=10, side=tk.LEFT)
+        cuadro = tk.Entry(frame1, textvariable=matr).pack(padx=5, side=tk.LEFT)
+        label_tex = tk.Label(frame1, text="DNI", font=LARGE_FONT).pack(pady=10, side=tk.LEFT)
+        cuadro = tk.Entry(frame1, textvariable=dni).pack(padx=5, side=tk.LEFT)
+
+        boton1 = tk.Button(self, text="Confirmar el deposito", font=LARGE_FONT, command= lambda :reservar(res)).pack(pady=20)
+
+        label_tex = tk.Label(self, textvariable=res, font=LARGE_FONT).pack()
+
+        def salir(self):
+            python = sys.executable
+            os.execl(python, python, * sys.argv)
+            return controller.show_frame(StartPage)
+
+        boton2 = tk.Button(self, text="Salir", font=LARGE_FONT, command=lambda: salir(self)).pack(pady=30)
+
 
 
 class Retir_client(tk.Frame):
@@ -262,12 +292,9 @@ class Retir_abon(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page One!!!", font=LARGE_FONT)
-        label.pack(pady=10,padx=10)
 
-        button1 = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(StartPage))
-        button1.pack()
+
+
 
 class Opcion_admin(tk.Frame):
 
@@ -481,7 +508,7 @@ class Cobro_abon(tk.Frame):
 
         def calculo(sol, anyo):
             if anyo.get() != "":
-                total = fact_serv.facturacion_anyo(lista_facturas,anyo.get())
+                total = fact_serv.facturacion_anyo(lista_facturas,int(anyo.get()))
                 sol.set(total)
             else:
                 sol.set("El año no puede estar vacío")

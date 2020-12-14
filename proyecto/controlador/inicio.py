@@ -26,7 +26,7 @@ root.geometry("900x800")
 
 
 
-label_tex = tk.Label(root, text=abon_serv.listar_caducidad_proximos_dias(lista_abonos), font=LARGE_FONT).pack(pady=30)
+
 
 
 boton2 = tk.Button(root, text="Salir", font=LARGE_FONT).pack(pady=20)
