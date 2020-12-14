@@ -104,6 +104,12 @@ class StartPage(tk.Frame):
                             command=comprobar_contr)
         button2.pack(padx=5, pady=20)
 
+        def salir(self):
+            python = sys.executable
+            os.execl(python, python, * sys.argv)
+            return controller.show_frame(StartPage)
+
+        boton3 = tk.Button(self, text="Salir de la aplicación", font=LARGE_FONT, command=quit).pack(pady=30)
 
 class Ingrs_clien(tk.Frame):
 
@@ -485,9 +491,10 @@ class Fact_tik(tk.Frame):
         def calculo(err, sol):
             fecha1, fecha2 = fechas(err)
             total, dinero = tick_serv.facturacion(lista_tickets, fecha1, fecha2)
-            sol.set(f"Se han obtenido {dinero} €  entre las dos fechas con el cobro de {total} tichets")
+            sol.set(f"Se han obtenido {dinero} €  entre las dos fechas por el cobro de {total} tichets")
 
-        label_tex = tk.Label(self, text="Establezca las dos fechas entre las que se a a buscar la facturación de los tickets", font=LARGE_FONT).pack(pady=20)
+        label_tex = tk.Label(self, text="Establezca las dos fechas entre las que se a a buscar la facturación de los tickets\n"
+                                        "Para las horas y minutas, insertelo con dos números", font=LARGE_FONT).pack(pady=20)
 
         frame_opt=tk.Frame(self)
         frame_opt.pack(pady=20)

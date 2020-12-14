@@ -70,11 +70,12 @@ def facturacion(listado_ticket, fecha1, fecha2):
     total=0
     count=0
     for ticket in listado_ticket:
-        if ticket.fechaEntrada >= fecha1 and ticket.fechaEntrada <= fecha2:
-            aux.append(ticket)
-            count += 1
+        if ticket.fechaSalida != None:
+            if ticket.fechaSalida >= fecha1 and ticket.fechaSalida <= fecha2:
+                aux.append(ticket)
+                count += 1
     for i in aux:
-        total += i
+        total += i.coste
 
     return count,round(total,2)
 
