@@ -155,6 +155,15 @@ def renovar_abono(listado_abonos,listado_facturas, dni, tipo_abo):
         res = "No nos consta un abono que esté contratado por una persona con ese DNI"
     return ok, res
 
-
+def modificar_abonado(listado_abonos, dni, nombre, apellidos, tarjeta, email):
+    abono = search_by_dni(listado_abonos, dni)
+    res =""
+    if abono != None:
+        cliente = clin_serv.modificar_cliente(abono.cliente, nombre, apellidos, tarjeta, email)
+        abono.cliente = cliente
+        res="La actualización de los datos del cliente ha sido correcta"
+    else:
+        res="No nos consta un abono perteneciente a un cliente con ese DNI"
+    return res
 
 

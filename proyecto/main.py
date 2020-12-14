@@ -480,8 +480,11 @@ class Cobro_abon(tk.Frame):
         sol = tk.StringVar()
 
         def calculo(sol, anyo):
-            total = fact_serv.facturacion_anyo(lista_facturas,anyo.get())
-            sol.set(total)
+            if anyo.get() != "":
+                total = fact_serv.facturacion_anyo(lista_facturas,anyo.get())
+                sol.set(total)
+            else:
+                sol.set("El año no puede estar vacío")
 
         label_tex = tk.Label(self, text="Seleccione el año por el que va a buscar la facturación de los abonados", font=LARGE_FONT).pack(pady=20)
 
@@ -540,13 +543,16 @@ class Nuevo_abon(tk.Frame):
             return cliente
 
         def abono(sol):
-            fecha = date()
-            cliente = client()
-            resl = abon_serv.crear_abono(lista_abonos,lista_facturas, parking, tip_abon.get(),tip_park.get(),fecha,cliente)
-            abon_serv.save_file(lista_abonos)
-            fact_serv.save_file(lista_facturas)
-            park_serv.save_file(parking)
-            sol.set(resl)
+            if dni.get() != "" and nom.get() != "" and apl.get() != "" and taj.get() != "" and mail.get() != "" and matrc.get() != "":
+                fecha = date()
+                cliente = client()
+                resl = abon_serv.crear_abono(lista_abonos,lista_facturas, parking, tip_abon.get(),tip_park.get(),fecha,cliente)
+                abon_serv.save_file(lista_abonos)
+                fact_serv.save_file(lista_facturas)
+                park_serv.save_file(parking)
+                sol.set(resl)
+            else:
+                 sol.set("Todos los campos deben estar rellenos")
 
         label_tex = tk.Label(self, text="Complete los datos para crear un abono", font=LARGE_FONT).pack(pady=10)
 
@@ -624,6 +630,59 @@ class Edit_abon(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        sol = tk.StringVar()
+        dni = tk.StringVar()
+        nom = tk.StringVar()
+        apl = tk.StringVar()
+        taj = tk.StringVar()
+        mail = tk.StringVar()
+
+
+        def renov(sol):
+            print("")
+            if dni.get() != "" and nom.get() != "" and apl.get() != "" and taj.get() != "" and mail.get() != "":
+                res = abon_serv.modificar_abonado(lista_abonos, dni.get().upper(), nom.get(), apl.get(), taj.get(), mail.get())
+                sol.set(res)
+                abon_serv.save_file(lista_abonos)
+            else:
+                sol.set("Todos los campos deben estar rellenos")
+
+        label_tex = tk.Label(self, text="Inserte el DNI del abonado en cuestión y los datos a modificar", font=LARGE_FONT).pack(pady=10)
+
+
+        frame_1=tk.Frame(self)
+        frame_1.pack(pady=5)
+
+        label_tex = tk.Label(frame_1, text="DNI ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+        Inp_dni = tk.Entry(frame_1, textvariable=dni).pack(padx=5, pady=15, side=tk.LEFT)
+
+
+        frame_1=tk.Frame(self)
+        frame_1.pack(pady=5)
+
+        label_tex = tk.Label(frame_1, text="Nombre ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+        Inp_nom = tk.Entry(frame_1, textvariable=nom).pack(padx=5, pady=15, side=tk.LEFT)
+        label_tex = tk.Label(frame_1, text="Apellidos ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+        Inp_ape = tk.Entry(frame_1, textvariable=apl).pack(padx=5, pady=15, side=tk.LEFT)
+
+        frame_2=tk.Frame(self)
+        frame_2.pack(pady=5)
+
+        label_tex = tk.Label(frame_2, text="Nº tarjeta ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+        Inp_tarj = tk.Entry(frame_2, textvariable=taj).pack(padx=5, pady=15, side=tk.LEFT)
+        label_tex = tk.Label(frame_2, text="Correo ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+        Inp_mail = tk.Entry(frame_2, textvariable=mail).pack(padx=5, pady=15, side=tk.LEFT)
+
+        boton = tk.Button(self, text="Confrimar datos del abonado",command= lambda : renov(sol), font=LARGE_FONT).pack(pady=20)
+
+        label_tex = tk.Label(self, textvariable=sol, font=LARGE_FONT).pack()
+
+        def salir(self):
+            python = sys.executable
+            os.execl(python, python, * sys.argv)
+            return controller.show_frame(StartPage)
+
+        boton2 = tk.Button(self, text="Salir", font=LARGE_FONT, command=lambda: salir(self)).pack(pady=30)
 
 class Renov_abon(tk.Frame):
 

@@ -29,38 +29,48 @@ root.geometry("900x800")
 
 sol = tk.StringVar()
 dni = tk.StringVar()
-tip_abon = tk.IntVar()
+nom = tk.StringVar()
+apl = tk.StringVar()
+taj = tk.StringVar()
+mail = tk.StringVar()
 
 
 def renov(sol):
     print("")
-    ok, resl = abon_serv.renovar_abono(lista_abonos,lista_facturas, dni.get().upper(), tip_abon.get())
-    if ok:
+    if dni.get() != "" and nom.get() != "" and apl.get() != "" and taj.get() != "" and mail.get() != "":
+        res = abon_serv.modificar_abonado(lista_abonos, dni.get().upper(), nom.get(), apl.get(), taj.get(), mail.get())
+        sol.set(res)
         abon_serv.save_file(lista_abonos)
-        fact_serv.save_file(lista_facturas)
-    sol.set(resl)
+    else:
+        sol.set("Todos los campos deben estar rellenos")
 
-label_tex = tk.Label(root, text="Inserte el DNI del abonado en cuestión y por cuanto desea renovarlo", font=LARGE_FONT).pack(pady=10)
+label_tex = tk.Label(root, text="Inserte el DNI del abonado en cuestión y los datos a modificar", font=LARGE_FONT).pack(pady=10)
 
 
 frame_1=tk.Frame(root)
 frame_1.pack(pady=5)
 
-label_tex = tk.Label(frame_1, text="DNI ", font=LARGE_FONT).pack(pady=5, side=tk.LEFT)
-Inp_dni = tk.Entry(frame_1, textvariable=dni).pack(padx=5, pady=5, side=tk.LEFT)
+label_tex = tk.Label(frame_1, text="DNI ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+Inp_dni = tk.Entry(frame_1, textvariable=dni).pack(padx=5, pady=15, side=tk.LEFT)
 
 
-label_tex = tk.Label(root, text="Tipo de abono", font=LARGE_FONT).pack(pady=5)
+frame_1=tk.Frame(root)
+frame_1.pack(pady=5)
 
-frame_opt_ab=tk.Frame(root)
-frame_opt_ab.pack(pady=5)
+label_tex = tk.Label(frame_1, text="Nombre ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+Inp_nom = tk.Entry(frame_1, textvariable=nom).pack(padx=5, pady=15, side=tk.LEFT)
+label_tex = tk.Label(frame_1, text="Apellidos ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+Inp_ape = tk.Entry(frame_1, textvariable=apl).pack(padx=5, pady=15, side=tk.LEFT)
 
-tk.Radiobutton(frame_opt_ab, text="Mensual (25€)", variable=tip_abon, value=1).pack(side=tk.LEFT, padx = 5)
-tk.Radiobutton(frame_opt_ab, text="Trimestral (70€)", variable=tip_abon, value=2).pack(side=tk.LEFT, padx = 5)
-tk.Radiobutton(frame_opt_ab, text="Semestral (130€)",variable=tip_abon, value=3).pack(side=tk.LEFT, padx = 5)
-tk.Radiobutton(frame_opt_ab, text="Anual (200€)",variable=tip_abon, value=4).pack(side=tk.LEFT, padx = 5)
+frame_2=tk.Frame(root)
+frame_2.pack(pady=5)
 
-boton = tk.Button(root, text="Confrimar renovación de abono",command= lambda : renov(sol), font=LARGE_FONT).pack(pady=5)
+label_tex = tk.Label(frame_2, text="Nº tarjeta ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+Inp_tarj = tk.Entry(frame_2, textvariable=taj).pack(padx=5, pady=15, side=tk.LEFT)
+label_tex = tk.Label(frame_2, text="Correo ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
+Inp_mail = tk.Entry(frame_2, textvariable=mail).pack(padx=5, pady=15, side=tk.LEFT)
+
+boton = tk.Button(root, text="Confrimar datos del abonado",command= lambda : renov(sol), font=LARGE_FONT).pack(pady=20)
 
 label_tex = tk.Label(root, textvariable=sol, font=LARGE_FONT).pack()
 

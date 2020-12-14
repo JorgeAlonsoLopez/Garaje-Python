@@ -1,29 +1,7 @@
 from modelo.Cliente import *
 from modelo.Vehiculo import *
 
-def modificar_cliente(cliente):
-    rep = True
-    while rep:
-        try:
-            nombre = input("Introduzca el nombre del usuario: ")
-            if nombre == "":
-                raise ValueError
-            apellidos = input("Introduzca los apellido del usuario: ")
-            if apellidos == "":
-                raise ValueError
-            tarjeta = input("Introduzca la tarjeta de crédito del usuario: ")
-            if tarjeta == "":
-                raise ValueError
-            email = input("Introduzca el email del usuario: ")
-            if email == "":
-                raise ValueError
-            matricula = input("Introduzca la matrícula del vehículo: ")
-            if matricula == "":
-                raise ValueError
-            rep = False
-        except ValueError:
-            print("Los campos de deben estar vacíos.")
-            print("Se repite la operación")
+def modificar_cliente(cliente, nombre, apellidos, tarjeta, email):
     cliente.nombre=nombre
     cliente.apellidos=apellidos
     cliente.numTarjeta=tarjeta
