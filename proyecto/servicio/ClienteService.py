@@ -55,5 +55,5 @@ def crear_cliente():
         cliente = Cliente(dni, nombre, apellidos, email, tarjeta, vehiculo)
         return cliente
     except ValueError:
-        print("Los campos de deben estar vacíos.")
+        print("Los campos no deben estar vacíos.")
         print("Se cancela la operación")

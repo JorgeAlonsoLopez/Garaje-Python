@@ -35,18 +35,6 @@ def caducidad_abono_m_y(mes, anio, listado_abonos):
             lista.append(abono)
     return lista
 
-def comprobar_creacion_abono(parking):
-    rest = False
-    try:
-        tipo = int(input("Introduzca el tipo de vehículo (1-coche, 2-moto, 3-movilidad reducida): "))
-        if tipo > 3 or tipo < 1:
-            raise ValueError
-        rest = park_serv.is_free_space(tipo, parking)
-        return tipo, rest
-    except ValueError:
-        print("Los numeros tienen que ser enteros entre 1 y 3.")
-        print("Se cancela la operación")
-
 def pedir_datos_fecha():
     fecha1 = None
     fin = True
@@ -71,57 +59,45 @@ def pedir_datos_fecha():
             print("La opción del mes tiene que estar entre 1 y 12 para los meses y de 1 a 31 para los días según corresponda el mes.")
             print("Se volverán a pedir los datos")
 
-def crear_abono(listado_abonos, lista_facturas, parking):
-    tipo, rest = comprobar_creacion_abono(parking)
-    try:
-        if rest:
-            cliente = clin_serv.crear_cliente()
-            plaza = park_serv.asignar_plaza(parking, tipo)
-            plaza.reservado = True
-            mes, precio = tipo_abono()
-            fecha = pedir_datos_fecha()
-            abono = Abono(cliente, fecha, (fecha + datedelta.datedelta(months=mes)), mes, precio)
-            abono.plaza = plaza
-            repo.add(listado_abonos, abono)
-            factura = Factura(datetime.now(), cliente, precio)
-            fact_serv.add(lista_facturas, factura)
-            print(f"Su plaza es la siguiente, no se olvide: {abono.plaza.nombre}")
-            print(f"Su pin es el siguiente, no lo pierda: {abono.pin}")
-        else:
-            print("No es posible conceder el abono ya que no hay plazas disponibles en este momento.")
-    except TypeError:
-        print("Solo se permiten números enteros.")
-        print("Se cancela la operación")
-    except ValueError:
-        print("Los numeros tienen que ser 1 o 2.")
-        print("Se cancela la operación")
+def crear_abono(listado_abonos, lista_facturas, parking, tipo_abo, tipo_plaza, fecha, cliente):
+    sol=""
+    rest = park_serv.is_free_space(tipo_plaza, parking)
+    if rest:
+        plaza = park_serv.asignar_plaza(parking, tipo_plaza)
+        plaza.reservado = True
+        mes, precio = tipo_abono(tipo_abo)
+        abono = Abono(cliente, fecha, (fecha + datedelta.datedelta(months=mes)), mes, precio)
+        abono.plaza = plaza
+        repo.add(listado_abonos, abono)
+        factura = Factura(datetime.now(), cliente, precio)
+        fact_serv.add(lista_facturas, factura)
+        sol += f"Su plaza es la siguiente, no se olvide: {abono.plaza.nombre}\n"
+        sol += f"Su pin es el siguiente, no lo pierda: {abono.pin}"
+    else:
+       sol = "No es posible conceder el abono ya que no hay plazas disponibles en este momento."
+    return sol
 
+def tipo_abono(opt):
 
-def tipo_abono():
-    try:
-        opt = int(input("Introduzca el tipo de abono que sea contratar.\n"
-                    "(1-mensual(25€), 2-trimestral(75€), 3-semestral(130€), 4-anual(200€)"))
-        if opt > 4 or opt < 1:
-            raise ValueError
-        if opt == 1:
-            mes=1
-            precio=25
-            return mes, precio
-        elif opt == 2:
-            mes=3
-            precio=75
-            return mes, precio
-        elif opt == 3:
-            mes=6
-            precio=130
-            return mes, precio
-        elif opt == 4:
-            mes=12
-            precio=200
-            return mes, precio
-    except ValueError:
-        print("La opción tienen que ser enteros entre 1 y 4.")
-        print("Se cancela la operación")
+    if opt > 4 or opt < 1:
+        raise ValueError
+    if opt == 1:
+        mes=1
+        precio=25
+        return mes, precio
+    elif opt == 2:
+        mes=3
+        precio=70
+        return mes, precio
+    elif opt == 3:
+        mes=6
+        precio=130
+        return mes, precio
+    elif opt == 4:
+        mes=12
+        precio=200
+        return mes, precio
+
 
 
 def listar_caducidad_proximos_dias(listado_abonos):
