@@ -138,17 +138,22 @@ def listar_caducidad_mes(listado_abonos):
         print("Los datos tienen que ser número enteros. La opción del mes tiene que estar entre 1 y 12 y años superiores al 2000.")
         print("Se cancela la operación")
 
-def renovar_abono(listado_abonos,listado_facturas, dni):
+def renovar_abono(listado_abonos,listado_facturas, dni, tipo_abo):
+    ok = False
+    res=""
     abono = search_by_dni(listado_abonos, dni)
-    mes, precio = tipo_abono()
-    abono.fechaFinal= (datetime.now() + datedelta.datedelta(months=mes))
-    abono.meses=mes
-    abono.precio=precio
-    factura = Factura(datetime.now(), abono.cliente, precio)
-    fact_serv.add(listado_facturas, factura)
-
-
-
+    if abono != None:
+        ok = True
+        mes, precio = tipo_abono(tipo_abo)
+        abono.fechaFinal= (datetime.now() + datedelta.datedelta(months=mes))
+        abono.meses=mes
+        abono.precio=precio
+        factura = Factura(datetime.now(), abono.cliente, precio)
+        fact_serv.add(listado_facturas, factura)
+        res = "Se ha renovado el abono con éxito"
+    else:
+        res = "No nos consta un abono que esté contratado por una persona con ese DNI"
+    return ok, res
 
 
 
