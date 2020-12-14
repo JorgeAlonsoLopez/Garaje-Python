@@ -115,28 +115,43 @@ def listar_caducidad_proximos_dias(listado_abonos):
             f"con una duración de {abono.meses} mes/es, emitido el {abono.fechaInicial.strftime('%d-%m-%Y')} "
             f"para el vehículo con matrícula {abono.cliente.vehiculo.matricula}")
 
-def listar_caducidad_mes(listado_abonos):
+
+def obtener_lista_cad(lista_abonos,mes, anio):
+
     lista = []
+    fallo = True
+    fail=""
+    sol=""
     try:
-        mesComprobar = int(input('Introduzca el mes a comprobar en numeros, p. ej. 1, 11: '))
-        anioComprobar = int(input('Introduzca el año a comprobar, p. ej. 2004, 1999: '))
+        mesComprobar = int(mes)
+        anioComprobar = int(anio)
         if mesComprobar > 12 or mesComprobar < 1:
             raise ValueError
-        if anioComprobar < 2000:
+        if anioComprobar < 2010:
             raise ValueError
-        for abono in listado_abonos:
+        fallo = False
+        fail=""
+        for abono in lista_abonos:
             if abono.fechaFinal.month == mesComprobar and abono.fechaFinal.year == anioComprobar:
                 lista.append(abono)
-        print(f"El número de abonos que caducan en el mes y año indicado son: {len(lista)}")
-        if len(lista) > 0:
-            print("Los abonos que caducan son los siguinetes: ")
-            for abono in lista:
-                print(f"El abono perteneciente a {abono.cliente.nombre} {abono.cliente.apellidos}, "
-                      f"con una duración de {abono.meses} mes/es, emitido el {abono.fechaInicial.strftime('%d-%m-%Y')} "
-                      f"para el vehículo con matrícula {abono.cliente.vehiculo.matricula}")
+        sol=""
+        return fallo ,lista, fail, sol
     except ValueError:
-        print("Los datos tienen que ser número enteros. La opción del mes tiene que estar entre 1 y 12 y años superiores al 2000.")
-        print("Se cancela la operación")
+        fail="Los datos tienen que ser número enteros. La opción del mes tiene que estar entre 1 y 12 y años superiores al 2010."
+        sol=""
+        return fallo ,lista, fail, sol
+
+def listar_caducidad_mes(fallo, lista):
+    res=""
+    if not fallo:
+        res += f"El número de abonos que caducan en el mes y año indicado son: {len(lista)} \n\n"
+        if len(lista) > 0:
+            res += "Los abonos que caducan son los siguinetes: \n\n"
+            for abono in lista:
+                res += f"El abono perteneciente a {abono.cliente.nombre} {abono.cliente.apellidos}, " \
+                       f"con una duración de {abono.meses} mes/es, emitido el {abono.fechaInicial.strftime('%d-%m-%Y')} " \
+                       f"para el vehículo con matrícula {abono.cliente.vehiculo.matricula}\n\n"
+    return res
 
 def renovar_abono(listado_abonos,listado_facturas, dni, tipo_abo):
     ok = False

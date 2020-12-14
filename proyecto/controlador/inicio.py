@@ -28,33 +28,38 @@ root.geometry("900x800")
 
 
 sol = tk.StringVar()
-dni = tk.StringVar()
+fail = tk.StringVar()
+f1 = tk.StringVar()
 
+def obt_fecha(lista_abonos):
+    lista = []
+    fallo = True
+    faill=""
+    soll=""
+    fallo ,lista, faill, soll = abon_serv.obtener_lista_cad(lista_abonos,cal1.get_date()[0:2], cal1.get_date()[6:10])
+    fail.set(faill)
+    sol.set(soll)
+    return fallo, lista
 
-def delet(sol):
-    print("")
-    if dni.get() != "":
-        if abon_serv.search_by_dni(lista_abonos, dni.get().upper()) != None:
-            abon_serv.remove(lista_abonos,abon_serv.search_by_dni(lista_abonos, dni.get().upper()))
-            sol.set("La acción de borrado ha concluido satisfactoriamente")
-            print("")
-            #abon_serv.save_file(lista_abonos)
-        else:
-            sol.set("No nos consta un abono perteneciente a un cliente con ese DNI")
-    else:
-        sol.set("Debe proporcionarnos el DNI")
+def consulta(sol):
+    fallo, lista = obt_fecha(lista_abonos)
+    res=""
+    res = abon_serv.listar_caducidad_mes(fallo, lista)
+    sol.set(res)
 
 label_tex = tk.Label(root, text="Inserte el DNI del abonado en cuestión", font=LARGE_FONT).pack(pady=10)
+def fecha():
+    f1.set(cal1.get_date()[0:2] + " - " + cal1.get_date()[6:10])
 
+cal1 = Calendar(root, selectmode="day",date_pattern='mm/dd/y', year=2020, month=12, day=10)
+cal1.pack(pady=20)
 
-frame_1=tk.Frame(root)
-frame_1.pack(pady=5)
+botonFec1 = tk.Button(root, text="Confrimar fecha",command=fecha, font=LARGE_FONT).pack(pady=10)
+fech1 = tk.Label(root, textvariable=f1).pack()
 
-label_tex = tk.Label(frame_1, text="DNI ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
-Inp_dni = tk.Entry(frame_1, textvariable=dni).pack(padx=5, pady=15, side=tk.LEFT)
+boton = tk.Button(root, text="Consultar caducidad de abonos",command= lambda : consulta(sol), font=LARGE_FONT).pack(pady=20)
 
-
-boton = tk.Button(root, text="Confrimar aliminación del abonado",command= lambda : delet(sol), font=LARGE_FONT).pack(pady=20)
+label_tex = tk.Label(root, textvariable=fail, font=LARGE_FONT).pack()
 
 label_tex = tk.Label(root, textvariable=sol, font=LARGE_FONT).pack()
 

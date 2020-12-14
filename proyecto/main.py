@@ -507,6 +507,49 @@ class Caduc_anyo(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        sol = tk.StringVar()
+        fail = tk.StringVar()
+        f1 = tk.StringVar()
+
+        def obt_fecha(lista_abonos):
+            lista = []
+            fallo = True
+            faill=""
+            soll=""
+            fallo ,lista, faill, soll = abon_serv.obtener_lista_cad(lista_abonos,cal1.get_date()[0:2], cal1.get_date()[6:10])
+            fail.set(faill)
+            sol.set(soll)
+            return fallo, lista
+
+        def consulta(sol):
+            fallo, lista = obt_fecha(lista_abonos)
+            res=""
+            res = abon_serv.listar_caducidad_mes(fallo, lista)
+            sol.set(res)
+
+        label_tex = tk.Label(self, text="Seleccione la fecha donde se encuentre el mes y año a consultar", font=LARGE_FONT).pack(pady=10)
+        def fecha():
+            f1.set(cal1.get_date()[0:2] + " - " + cal1.get_date()[6:10])
+
+        cal1 = Calendar(self, selectmode="day",date_pattern='mm/dd/y', year=2020, month=12, day=10)
+        cal1.pack(pady=20)
+
+        botonFec1 = tk.Button(self, text="Confrimar fecha",command=fecha, font=LARGE_FONT).pack(pady=10)
+        fech1 = tk.Label(self, textvariable=f1).pack()
+
+        boton = tk.Button(self, text="Consultar caducidad de abonos",command= lambda : consulta(sol), font=LARGE_FONT).pack(pady=20)
+
+        label_tex = tk.Label(self, textvariable=fail, font=LARGE_FONT).pack()
+
+        label_tex = tk.Label(self, textvariable=sol, font=LARGE_FONT).pack()
+
+        def salir(self):
+            python = sys.executable
+            os.execl(python, python, * sys.argv)
+            return controller.show_frame(StartPage)
+
+        boton2 = tk.Button(self, text="Salir", font=LARGE_FONT, command=lambda: salir(self)).pack(pady=50)
+
 
 class Caduc_dias(tk.Frame):
 
@@ -515,11 +558,12 @@ class Caduc_dias(tk.Frame):
 
 
 
+
+
 class Nuevo_abon(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
 
         fec = tk.StringVar()
         sol = tk.StringVar()
@@ -639,7 +683,6 @@ class Edit_abon(tk.Frame):
 
 
         def renov(sol):
-            print("")
             if dni.get() != "" and nom.get() != "" and apl.get() != "" and taj.get() != "" and mail.get() != "":
                 res = abon_serv.modificar_abonado(lista_abonos, dni.get().upper(), nom.get(), apl.get(), taj.get(), mail.get())
                 sol.set(res)
@@ -695,7 +738,6 @@ class Renov_abon(tk.Frame):
 
 
         def renov(sol):
-            print("")
             ok, resl = abon_serv.renovar_abono(lista_abonos,lista_facturas, dni.get().upper(), tip_abon.get())
             if ok:
                 abon_serv.save_file(lista_abonos)
@@ -743,13 +785,11 @@ class Elimn_abon(tk.Frame):
 
 
         def delet(sol):
-            print("")
             if dni.get() != "":
                 if abon_serv.search_by_dni(lista_abonos, dni.get().upper()) != None:
                     abon_serv.remove(lista_abonos,abon_serv.search_by_dni(lista_abonos, dni.get().upper()))
                     sol.set("La acción de borrado ha concluido satisfactoriamente")
-                    print("")
-                    #abon_serv.save_file(lista_abonos)
+                    abon_serv.save_file(lista_abonos)
                 else:
                     sol.set("No nos consta un abono perteneciente a un cliente con ese DNI")
             else:
@@ -775,35 +815,6 @@ class Elimn_abon(tk.Frame):
             return controller.show_frame(StartPage)
 
         boton2 = tk.Button(self, text="Salir", font=LARGE_FONT, command=lambda: salir(self)).pack(pady=30)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class PageOne(tk.Frame):
-
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page One!!!", font=LARGE_FONT)
-        label.pack(pady=10,padx=10)
-
-        button1 = tk.Button(self, text="Back to Home",
-                            command=lambda: controller.show_frame(StartPage))
-        button1.pack()
-
-        button2 = tk.Button(self, text="Page Two",
-                            command=lambda: controller.show_frame(PageTwo))
-        button2.pack()
-
 
 
 
