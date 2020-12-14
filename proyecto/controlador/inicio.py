@@ -29,22 +29,22 @@ root.geometry("900x800")
 
 sol = tk.StringVar()
 dni = tk.StringVar()
-nom = tk.StringVar()
-apl = tk.StringVar()
-taj = tk.StringVar()
-mail = tk.StringVar()
 
 
-def renov(sol):
+def delet(sol):
     print("")
-    if dni.get() != "" and nom.get() != "" and apl.get() != "" and taj.get() != "" and mail.get() != "":
-        res = abon_serv.modificar_abonado(lista_abonos, dni.get().upper(), nom.get(), apl.get(), taj.get(), mail.get())
-        sol.set(res)
-        abon_serv.save_file(lista_abonos)
+    if dni.get() != "":
+        if abon_serv.search_by_dni(lista_abonos, dni.get().upper()) != None:
+            abon_serv.remove(lista_abonos,abon_serv.search_by_dni(lista_abonos, dni.get().upper()))
+            sol.set("La acción de borrado ha concluido satisfactoriamente")
+            print("")
+            #abon_serv.save_file(lista_abonos)
+        else:
+            sol.set("No nos consta un abono perteneciente a un cliente con ese DNI")
     else:
-        sol.set("Todos los campos deben estar rellenos")
+        sol.set("Debe proporcionarnos el DNI")
 
-label_tex = tk.Label(root, text="Inserte el DNI del abonado en cuestión y los datos a modificar", font=LARGE_FONT).pack(pady=10)
+label_tex = tk.Label(root, text="Inserte el DNI del abonado en cuestión", font=LARGE_FONT).pack(pady=10)
 
 
 frame_1=tk.Frame(root)
@@ -54,23 +54,7 @@ label_tex = tk.Label(frame_1, text="DNI ", font=LARGE_FONT).pack(pady=15, side=t
 Inp_dni = tk.Entry(frame_1, textvariable=dni).pack(padx=5, pady=15, side=tk.LEFT)
 
 
-frame_1=tk.Frame(root)
-frame_1.pack(pady=5)
-
-label_tex = tk.Label(frame_1, text="Nombre ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
-Inp_nom = tk.Entry(frame_1, textvariable=nom).pack(padx=5, pady=15, side=tk.LEFT)
-label_tex = tk.Label(frame_1, text="Apellidos ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
-Inp_ape = tk.Entry(frame_1, textvariable=apl).pack(padx=5, pady=15, side=tk.LEFT)
-
-frame_2=tk.Frame(root)
-frame_2.pack(pady=5)
-
-label_tex = tk.Label(frame_2, text="Nº tarjeta ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
-Inp_tarj = tk.Entry(frame_2, textvariable=taj).pack(padx=5, pady=15, side=tk.LEFT)
-label_tex = tk.Label(frame_2, text="Correo ", font=LARGE_FONT).pack(pady=15, side=tk.LEFT)
-Inp_mail = tk.Entry(frame_2, textvariable=mail).pack(padx=5, pady=15, side=tk.LEFT)
-
-boton = tk.Button(root, text="Confrimar datos del abonado",command= lambda : renov(sol), font=LARGE_FONT).pack(pady=20)
+boton = tk.Button(root, text="Confrimar aliminación del abonado",command= lambda : delet(sol), font=LARGE_FONT).pack(pady=20)
 
 label_tex = tk.Label(root, textvariable=sol, font=LARGE_FONT).pack()
 
