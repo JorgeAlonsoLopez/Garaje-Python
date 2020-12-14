@@ -457,7 +457,7 @@ class Fact_tik(tk.Frame):
         fech2 = tk.Label(frame_3, textvariable=f2)
         fech2.pack(side=tk.LEFT)
 
-        botonFec1 = tk.Button(self, text="Obtener datos",command= lambda : calculo(fail, sol), font=LARGE_FONT).pack(pady=10)
+        botonFec1 = tk.Button(self, text="Obtener facturación",command= lambda : calculo(fail, sol), font=LARGE_FONT).pack(pady=10)
 
         label_tex = tk.Label(self, textvariable=fail, font=LARGE_FONT).pack()
 
@@ -474,7 +474,28 @@ class Cobro_abon(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
+        anyo = tk.StringVar()
+        sol = tk.StringVar()
 
+        def calculo(sol, anyo):
+            total = fact_serv.facturacion_anyo(lista_facturas,anyo.get())
+            sol.set(total)
+
+        label_tex = tk.Label(self, text="Seleccione el año por el que va a buscar la facturación de los abonados", font=LARGE_FONT).pack(pady=20)
+
+        cuadro = tk.Entry(self, textvariable=anyo).pack(padx=5)
+
+
+        botonFec1 = tk.Button(self, text="Obtener facturación",command= lambda : calculo(sol, anyo), font=LARGE_FONT).pack(pady=30)
+
+        label_tex = tk.Label(self, textvariable=sol, font=LARGE_FONT).pack()
+
+        def salir(self):
+            python = sys.executable
+            os.execl(python, python, * sys.argv)
+            return controller.show_frame(StartPage)
+
+        boton2 = tk.Button(self, text="Salir", font=LARGE_FONT, command=lambda: salir(self)).pack(pady=50)
 
 class Caduc_anyo(tk.Frame):
 

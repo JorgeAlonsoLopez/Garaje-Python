@@ -23,13 +23,17 @@ def facturacion_anyo(lista_facturas, year):
     lista = repo.search_by_year(lista_facturas, year)
     contd = 0
     recaudac = 0
-    if len(lista) > 0:
-        for factura in lista:
-            contd += 1
-            recaudac += factura.coste
-        recaudac = format(recaudac, ".2f")
-        print(f"Ha habido en el año seleccionado ({year}), un total de {contd}"
-              f" cobros de abonos por un valor de {recaudac} + €.")
+    sol = ""
+    if lista!= None:
+        if len(lista) > 0:
+            for factura in lista:
+                contd += 1
+                recaudac += factura.coste
+            recaudac = format(recaudac, ".2f")
+            sol = f"Ha habido en el año seleccionado ({year}), un total de {contd}" \
+                  f" cobros de abonos por un valor de {recaudac} + €."
+        else:
+            sol = "No se ha encontrado ningún pago de abono perteneciente al año insertado"
     else:
-        print("No se ha encontrado ningún pago de abono perteneciente al año insertado")
-
+        sol = "No se ha encontrado ningún pago de abono perteneciente al año insertado"
+    return sol
