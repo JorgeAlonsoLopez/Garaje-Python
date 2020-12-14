@@ -178,6 +178,7 @@ class Ingrs_abon(tk.Frame):
             if dni.get() != "" and matr.get() != "":
                 resp = park_serv.depositar_vehiculo_abonado(dni.get().upper(), matr.get().upper(), lista_abonos, parking)
                 res.set(resp)
+                abon_serv.save_file(lista_abonos)
                 park_serv.save_file(parking)
             else:
                 res.set("Los campos debes estar rellenos")
@@ -293,7 +294,46 @@ class Retir_abon(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        matr=tk.StringVar()
+        plz=tk.StringVar()
+        pin=tk.StringVar()
+        res=tk.StringVar()
 
+        def abandonar(res):
+            resp =""
+            try:
+                if plz.get() != "" and matr.get() != "" and pin.get() != "":
+                    resp = park_serv.retirar_vehiculo_abonado(matr.get().upper(), plz.get().upper(), lista_abonos, int(pin.get()), parking)
+                    res.set(resp)
+                    abon_serv.save_file(lista_abonos)
+                    park_serv.save_file(parking)
+                else:
+                    res.set("Los campos debes estar rellenos")
+            except ValueError:
+                    res.set("Solo se permiten números enteros para el pin.")
+
+        label_tex = tk.Label(self, text="Inserte la matrícula del vehículo, su pin y el nombre de la plaza", font=LARGE_FONT).pack(pady=20)
+
+        frame1=tk.Frame(self)
+        frame1.pack(pady=20)
+
+        label_tex = tk.Label(frame1, text="Matrícula", font=LARGE_FONT).pack(pady=10, side=tk.LEFT)
+        cuadro = tk.Entry(frame1, textvariable=matr).pack(padx=5, side=tk.LEFT)
+        label_tex = tk.Label(frame1, text="Nombre de la plaza", font=LARGE_FONT).pack(pady=10, side=tk.LEFT)
+        cuadro = tk.Entry(frame1, textvariable=plz).pack(padx=5, side=tk.LEFT)
+        label_tex = tk.Label(frame1, text="Pin", font=LARGE_FONT).pack(pady=10, side=tk.LEFT)
+        cuadro = tk.Entry(frame1, textvariable=pin).pack(padx=5, side=tk.LEFT)
+
+        boton1 = tk.Button(self, text="Confirmar la retirada", font=LARGE_FONT, command= lambda :abandonar(res)).pack(pady=20)
+
+        label_tex = tk.Label(self, textvariable=res, font=LARGE_FONT).pack()
+
+        def salir(self):
+            python = sys.executable
+            os.execl(python, python, * sys.argv)
+            return controller.show_frame(StartPage)
+
+        boton2 = tk.Button(self, text="Salir", font=LARGE_FONT, command=lambda: salir(self)).pack(pady=30)
 
 
 class Opcion_admin(tk.Frame):

@@ -128,9 +128,7 @@ def depositar_vehiculo_abonado(dni, matricula, lista_abonos, parking):
                 if abono.cliente.vehiculo.matricula == matricula :
                     if abono.plaza.ocupado == False:
                         abono.plaza.ocupado = True
-                        #plaza = search_plaza_by_name(parking, abono.plaza.nombre)
                         abono.plaza.vehiculo = abono.cliente.vehiculo
-                        #plaza = abono.plaza
                         modifPlz(True, abono.cliente.vehiculo, abono.plaza.nombre, parking)
                         res +="El vehículo se ha aparcado con éxito.\n"
                         res +="Gracias por usar nuestros servicios."
@@ -163,27 +161,23 @@ def retirar_vehiculo_abonado(matricula, nombre_plaza, lista_abonos, pin, parking
     res = ""
     abono = serv_abo.search_by_nombre_plaza(lista_abonos,nombre_plaza)
     if abono != None:
-        if abono.fechaFinal >= datetime.now():
-            if abono.fechaInicial <= datetime.now():
-                if abono.cliente.vehiculo.matricula == matricula and abono.pin == pin:
-                    if abono.plaza.ocupado == True:
-                        plaza = search_plaza_by_name(parking, abono.plaza.nombre)
-                        abono.plaza.ocupado = False
-                        abono.plaza.vehiculo = None
-                        plaza = abono.plaza
-                        print("El vehículo se ha retirado con éxito.")
-                        print("Gracias por usar nuestros servicios.")
-                    else:
-                        print("Puede que se le haya olvidado, pero no ha guardado el vehículo.")
+        if abono.fechaInicial <= datetime.now():
+            if abono.cliente.vehiculo.matricula == matricula and abono.pin == pin:
+                if abono.plaza.ocupado == True:
+                    abono.plaza.ocupado = False
+                    abono.plaza.vehiculo = None
+                    modifPlz(False, None, abono.plaza.nombre, parking)
+                    res +="El vehículo se ha retirado con éxito.\n"
+                    res +="Gracias por usar nuestros servicios."
                 else:
-                    print("No se puede proceder con los datos aportados.")
+                    res +="Puede que se le haya olvidado, pero no ha guardado el vehículo."
             else:
-                print("Todavía no ha entrado en vigor el abono, tiene que esperar a la fecha establecida")
+                res +="No se puede proceder con los datos aportados."
         else:
-            res +="Su abono a caducado, va a tener que renovarlo"
+            res +="Todavía no ha entrado en vigor el abono, tiene que esperar a la fecha establecida"
     else:
-        print("No se puede proceder con los datos aportados.")
-
+        res +="No se puede proceder con los datos aportados."
+    return res
 
 
 
