@@ -1,8 +1,6 @@
-import sys
-import os
 import tkinter as tk
-from tkinter import ttk
 from tkcalendar import *
+from tkinter import ttk
 from datetime import datetime
 from math import ceil
 from tkinter import messagebox
@@ -18,10 +16,20 @@ lista_abonos = abon_serv.load_file()
 lista_tickets = tick_serv.load_file()
 lista_facturas = fact_serv.load_file()
 parking = park_serv.load_file()
+import os
 
+import servicio.AbonoService as serv_abo
 LARGE_FONT= ("Verdana", 10)
-NEGRITA= ("Verdana", 12, "bold")
-TITULO= ("Verdana", 15, "bold")
-PASSW = "1"
+# Configuración de la raíz
+root = tk.Tk()
+root.geometry("900x800")
 
-os.system(f'python controlador/inicio.py')
+def redirecc(root, nombre):
+    root.destroy()
+    os.system(f'python controlador/{nombre}.py')
+
+label_tex = tk.Label(root, text=abon_serv.listar_caducidad_proximos_dias(lista_abonos), font=LARGE_FONT).pack(pady=30)
+
+boton2 = tk.Button(root, text="Volver a la zona de administración", font=LARGE_FONT, command=lambda: redirecc(root, "admin")).pack(pady=10)
+
+root.mainloop()
