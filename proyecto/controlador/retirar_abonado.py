@@ -20,6 +20,7 @@ import os
 
 import servicio.AbonoService as serv_abo
 LARGE_FONT= ("Verdana", 10)
+NEGRITA= ("Verdana", 12, "bold")
 # Configuración de la raíz
 root = tk.Tk()
 root.geometry("900x800")
@@ -46,7 +47,7 @@ def abandonar(res):
     except ValueError:
             res.set("Solo se permiten números enteros para el pin.")
 
-label_tex = tk.Label(root, text="Inserte la matrícula del vehículo, su pin y el nombre de la plaza", font=LARGE_FONT).pack(pady=20)
+label_tex = tk.Label(root, text="Inserte la matrícula del vehículo, su pin y el nombre de la plaza", font=NEGRITA).pack(pady=20)
 
 frame1=tk.Frame(root)
 frame1.pack(pady=20)

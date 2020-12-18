@@ -20,6 +20,7 @@ import os
 
 import servicio.AbonoService as serv_abo
 LARGE_FONT= ("Verdana", 10)
+NEGRITA= ("Verdana", 12, "bold")
 # Configuración de la raíz
 root = tk.Tk()
 root.geometry("900x800")
@@ -71,7 +72,7 @@ def retirar():
                 ticketInf.set("La cantidad insertada no es suficiente")
 
 
-label_tex = tk.Label(root, text="Inserte la matrícula del vehículo, el nombre de la plaza y pin", font=LARGE_FONT).pack(pady=20)
+label_tex = tk.Label(root, text="Inserte la matrícula del vehículo, el nombre de la plaza y pin", font=NEGRITA).pack(pady=20)
 
 label_tex = tk.Label(root, text="Matrícula", font=LARGE_FONT).pack(pady=10)
 

@@ -20,6 +20,7 @@ import os
 
 import servicio.AbonoService as serv_abo
 LARGE_FONT= ("Verdana", 10)
+NEGRITA= ("Verdana", 12, "bold")
 # Configuración de la raíz
 root = tk.Tk()
 root.geometry("900x800")
@@ -45,7 +46,7 @@ def renov(sol):
     else:
         sol.set("Todos los campos deben estar rellenos")
 
-label_tex = tk.Label(root, text="Inserte el DNI del abonado en cuestión y los datos a modificar", font=LARGE_FONT).pack(pady=10)
+label_tex = tk.Label(root, text="Inserte el DNI del abonado en cuestión y los datos a modificar", font=NEGRITA).pack(pady=10)
 
 
 frame_1=tk.Frame(root)

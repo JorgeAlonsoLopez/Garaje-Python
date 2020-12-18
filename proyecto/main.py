@@ -22,6 +22,6 @@ parking = park_serv.load_file()
 LARGE_FONT= ("Verdana", 10)
 NEGRITA= ("Verdana", 12, "bold")
 TITULO= ("Verdana", 15, "bold")
-PASSW = "1"
+
 
 os.system(f'python controlador/inicio.py')

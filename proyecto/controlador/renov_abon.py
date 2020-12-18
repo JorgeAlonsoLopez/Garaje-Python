@@ -20,6 +20,7 @@ import os
 
 import servicio.AbonoService as serv_abo
 LARGE_FONT= ("Verdana", 10)
+NEGRITA= ("Verdana", 12, "bold")
 # Configuración de la raíz
 root = tk.Tk()
 root.geometry("900x800")
@@ -41,7 +42,7 @@ def renov(sol):
         fact_serv.save_file(lista_facturas)
     sol.set(resl)
 
-label_tex = tk.Label(root, text="Inserte el DNI del abonado en cuestión y por cuanto desea renovarlo", font=LARGE_FONT).pack(pady=10)
+label_tex = tk.Label(root, text="Inserte el DNI del abonado en cuestión y por cuanto desea renovarlo", font=NEGRITA).pack(pady=10)
 
 
 frame_1=tk.Frame(root)

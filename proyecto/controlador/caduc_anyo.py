@@ -20,6 +20,7 @@ import os
 
 import servicio.AbonoService as serv_abo
 LARGE_FONT= ("Verdana", 10)
+NEGRITA= ("Verdana", 12, "bold")
 # Configuración de la raíz
 root = tk.Tk()
 root.geometry("900x800")

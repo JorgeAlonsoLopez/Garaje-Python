@@ -20,6 +20,7 @@ import os
 
 import servicio.AbonoService as serv_abo
 LARGE_FONT= ("Verdana", 10)
+NEGRITA= ("Verdana", 12, "bold")
 # Configuración de la raíz
 root = tk.Tk()
 root.geometry("900x800")
@@ -96,7 +97,7 @@ def calculo(err, sol):
         sol.set(f"Se han obtenido {dinero} €  entre las dos fechas por el cobro de {total} tichets")
 
 label_tex = tk.Label(root, text="Establezca las dos fechas entre las que se a a buscar la facturación de los tickets\n"
-                                "Para las horas y minutas, insertelo con dos números", font=LARGE_FONT).pack(pady=20)
+                                "Para las horas y minutos, inserte dos números", font=NEGRITA).pack(pady=20)
 
 frame_opt=tk.Frame(root)
 frame_opt.pack(pady=20)
