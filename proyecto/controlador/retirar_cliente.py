@@ -118,7 +118,8 @@ def infoTick(ticket):
 
     from reportlab.pdfgen import canvas
 
-    pdf = canvas.Canvas("../"+fileName)
+    path = os.path.expanduser("~/Downloads")
+    pdf = canvas.Canvas(f"{path}/"+fileName)
     pdf.setTitle(documentTitle)
     pdf.setAuthor("Jorge Alosno")
 
