@@ -34,6 +34,7 @@ ticketInf=tk.StringVar()
 v=tk.IntVar()
 park = tk.StringVar()
 park.set(park_serv.mostrar_info_gen(parking))
+ticket = None
 
 def reservar():
     res =""
@@ -41,11 +42,81 @@ def reservar():
     if (v.get() == 1 or v.get() == 2 or v.get() == 3) and matr.get() != "":
         res, tick = park_serv.depositar_vehiculo(matr.get().upper(),v.get(),lista_tickets,parking)
         if tick != None:
-            ticketInf.set(tick_serv.pintar_ticket(tick))
+            ticket = tick
+            boton1 = tk.Button(frame_tick, text="Descargar ticket", font=LARGE_FONT, command=lambda :infoTick(ticket)).pack(pady=20)
             tick_serv.save_file(lista_tickets)
             park_serv.save_file(parking)
         else:
             ticketInf.set(res)
+
+def infoTick(ticket):
+
+    fileName = 'Ticket_ingreso.pdf'
+    documentTitle = 'Ticket de deposito'
+    title = 'TICKET'
+
+
+    if ticket.coste != 0:
+        textLines = [
+            f"Matrícula del vehículo: {ticket.matricula}",
+            "",
+            f"Plaza del parking: {ticket.plaza.nombre}",
+            "",
+            f"Fecha y hora de estacionamiento: ",
+            f"{ticket.fechaEntrada.strftime('%d-%m-%Y  %H:%M:%S')}",
+            "",
+            f"PIN: {ticket.pin}",
+            "",
+            f"Coste: {ticket.coste} €",
+            "",
+            f"Cambio: {ticket.cambio} €",
+            "",
+            f"Fecha y hora de salida: ",
+            f"{ticket.fechaSalida.strftime('%d-%m-%Y  %H:%M:%S')}",
+            "",
+            "Gracias por usar nuestros servicios"
+        ]
+    else:
+        textLines = [
+            f"Matrícula del vehículo: {ticket.matricula}",
+            "",
+            f"Plaza del parking: {ticket.plaza.nombre}",
+            "",
+            f"Fecha y hora de estacionamiento: ",
+            f"{ticket.fechaEntrada.strftime('%d-%m-%Y  %H:%M:%S')}",
+            "",
+            f"PIN: {ticket.pin}",
+            "",
+            "Gracias por usar nuestros servicios"
+        ]
+
+
+    from reportlab.pdfgen import canvas
+
+    pdf = canvas.Canvas("../"+fileName)
+    pdf.setTitle(documentTitle)
+    pdf.setAuthor("Jorge Alosno")
+
+
+    pdf.drawCentredString(300, 770, title)
+
+    pdf.setFillColorRGB(0, 0, 255)
+    pdf.setFont("Courier", 14)
+
+    from reportlab.lib import colors
+
+    text = pdf.beginText(120, 680)
+    text.setFont("Courier", 12)
+    text.setFillColor(colors.black)
+    for line in textLines:
+        text.textLine(line)
+
+    pdf.drawText(text)
+
+    pdf.save()
+
+
+
 
 label_tex = tk.Label(root, text="Plazas libres:", font=NEGRITA).pack(pady=20)
 
@@ -71,8 +142,8 @@ label_tex = tk.Label(root, text="Por favor, acuerdese del nombre de la plaza y d
 
 boton1 = tk.Button(root, text="Confirmar el deposito", font=LARGE_FONT, command=reservar).pack(pady=20)
 
-label_tex = tk.Label(root, textvariable=ticketInf, font=LARGE_FONT).pack(pady=5)
-
+frame_tick=tk.Frame(root)
+frame_tick.pack(pady=20)
 
 boton2 = tk.Button(root, text="Salir", font=LARGE_FONT, command=lambda: redirecc(root, "inicio")).pack(pady=30)
 

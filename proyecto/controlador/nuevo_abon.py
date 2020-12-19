@@ -40,6 +40,7 @@ mail = tk.StringVar()
 matrc = tk.StringVar()
 tip_park = tk.IntVar()
 tip_abon = tk.IntVar()
+abono = None
 
 def date():
     anio1 = int(fec.get()[6:10])
@@ -55,13 +56,78 @@ def abono(sol):
     if dni.get() != "" and nom.get() != "" and apl.get() != "" and taj.get() != "" and mail.get() != "" and matrc.get() != "":
         fecha = date()
         cliente = client()
-        resl = abon_serv.crear_abono(lista_abonos,lista_facturas, parking, tip_abon.get(),tip_park.get(),fecha,cliente)
+        resl, new_abono, factura = abon_serv.crear_abono(parking, tip_abon.get(),tip_park.get(),fecha,cliente)
+        abon_serv.anyadir_abono(lista_abonos, lista_facturas, new_abono, factura)
         abon_serv.save_file(lista_abonos)
         fact_serv.save_file(lista_facturas)
         park_serv.save_file(parking)
         sol.set(resl)
+
+        abono = new_abono
+        boton1 = tk.Button(frame_tick, text="Descargar información del abono", font=LARGE_FONT, command=lambda :infoAbon(abono)).pack(pady=20)
+
     else:
          sol.set("Todos los campos deben estar rellenos")
+
+
+def infoAbon(abono):
+
+    fileName = 'Nuevo_abono.pdf'
+    documentTitle = 'Datos del nuevo abonado'
+    title = 'Datos del nuevo abonado'
+
+
+    textLines = [
+        f"Cliente (nombre): {abono.cliente.nombre}",
+        "",
+        f"Cliente (apellidos):{abono.cliente.apellidos} ",
+        "",
+        f"DNI: {abono.cliente.dni}",
+        "",
+        f"Matrícula: {abono.cliente.vehiculo.matricula}",
+        "",
+        f"Plaza: {abono.plaza.nombre}",
+        "",
+        f"Coste: {abono.precio} €",
+        "",
+        f"Meses contratados: {abono.meses}",
+        "",
+        f"Fecha de inicio: {abono.fechaInicial.strftime('%d-%m-%Y')}",
+        "",
+        f"Fecha de finalización: {abono.fechaFinal.strftime('%d-%m-%Y')}",
+        "",
+        f"PIN: {abono.pin}",
+        "",
+        "Gracias por confiar en nosotros"
+    ]
+
+
+
+    from reportlab.pdfgen import canvas
+
+    pdf = canvas.Canvas("../"+fileName)
+    pdf.setTitle(documentTitle)
+    pdf.setAuthor("Jorge Alosno")
+
+    pdf.drawCentredString(300, 770, title)
+
+    pdf.setFillColorRGB(0, 0, 255)
+    pdf.setFont("Courier", 14)
+
+    from reportlab.lib import colors
+
+    text = pdf.beginText(120, 680)
+    text.setFont("Courier", 12)
+    text.setFillColor(colors.black)
+    for line in textLines:
+        text.textLine(line)
+
+    pdf.drawText(text)
+
+    pdf.save()
+
+
+
 
 label_tex = tk.Label(root, text="Complete los datos para crear el abono", font=NEGRITA).pack(pady=10)
 
@@ -125,7 +191,10 @@ fech1.pack(side=tk.LEFT)
 
 boton = tk.Button(root, text="Confrimar solicitud de abono",command= lambda : abono(sol), font=LARGE_FONT).pack(pady=5)
 
-label_tex = tk.Label(root, textvariable=sol, font=LARGE_FONT).pack()
+label_tex = tk.Label(root, textvariable=sol, font=LARGE_FONT).pack(pady=5)
+
+frame_tick=tk.Frame(root)
+frame_tick.pack(pady=10)
 
 boton2 = tk.Button(root, text="Volver a la zona de administración", font=LARGE_FONT, command=lambda: redirecc(root, "admin")).pack(pady=10)
 

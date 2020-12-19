@@ -59,8 +59,10 @@ def pedir_datos_fecha():
             print("La opción del mes tiene que estar entre 1 y 12 para los meses y de 1 a 31 para los días según corresponda el mes.")
             print("Se volverán a pedir los datos")
 
-def crear_abono(listado_abonos, lista_facturas, parking, tipo_abo, tipo_plaza, fecha, cliente):
+def crear_abono(parking, tipo_abo, tipo_plaza, fecha, cliente):
     sol=""
+    abono=None
+    factura=None
     rest = park_serv.is_free_space(tipo_plaza, parking)
     if rest:
         plaza = park_serv.asignar_plaza(parking, tipo_plaza)
@@ -68,14 +70,17 @@ def crear_abono(listado_abonos, lista_facturas, parking, tipo_abo, tipo_plaza, f
         mes, precio = tipo_abono(tipo_abo)
         abono = Abono(cliente, fecha, (fecha + datedelta.datedelta(months=mes)), mes, precio)
         abono.plaza = plaza
-        repo.add(listado_abonos, abono)
         factura = Factura(datetime.now(), cliente, precio)
-        fact_serv.add(lista_facturas, factura)
-        sol += f"Su plaza es la siguiente, no se olvide: {abono.plaza.nombre}\n"
-        sol += f"Su pin es el siguiente, no lo pierda: {abono.pin}"
+        #repo.add(listado_abonos, abono)
+        #fact_serv.add(lista_facturas, factura)
+        sol += f"Descarge el siguiente pdf para saber su plaza asignada y pin correspondiente\n"
     else:
        sol = "No es posible conceder el abono ya que no hay plazas disponibles en este momento."
-    return sol
+    return sol, abono, factura
+
+def anyadir_abono(listado_abonos, lista_facturas, abono, factura):
+    repo.add(listado_abonos, abono)
+    fact_serv.add(lista_facturas, factura)
 
 def tipo_abono(opt):
 
