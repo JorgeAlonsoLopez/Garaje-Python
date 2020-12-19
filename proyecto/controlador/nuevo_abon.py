@@ -41,6 +41,7 @@ matrc = tk.StringVar()
 tip_park = tk.IntVar()
 tip_abon = tk.IntVar()
 abono = None
+today = datetime.today()
 
 def date():
     anio1 = int(fec.get()[6:10])
@@ -171,7 +172,7 @@ tk.Radiobutton(frame_opt_ab, text="Trimestral (70€)", variable=tip_abon, value
 tk.Radiobutton(frame_opt_ab, text="Semestral (130€)",variable=tip_abon, value=3).pack(side=tk.LEFT, padx = 5)
 tk.Radiobutton(frame_opt_ab, text="Anual (200€)",variable=tip_abon, value=4).pack(side=tk.LEFT, padx = 5)
 
-cal1 = Calendar(root, selectmode="day",date_pattern='mm/dd/y', year=2020, month=12, day=10)
+cal1 = Calendar(root, selectmode="day",date_pattern='mm/dd/y', year=today.year, month=today.month, day=today.day)
 cal1.pack(pady=5)
 
 def fecha():

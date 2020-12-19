@@ -38,6 +38,7 @@ fail = tk.StringVar()
 v=tk.IntVar()
 res = tk.StringVar()
 text=tk.StringVar()
+today = datetime.today()
 
 
 def fechas(err):
@@ -105,7 +106,7 @@ frame_opt.pack(pady=20)
 tk.Radiobutton(frame_opt, text="Fecha de inicio", variable=v, value=1).pack(side=tk.LEFT, padx = 10)
 tk.Radiobutton(frame_opt, text="Fecha de fin", variable=v, value=2).pack(side=tk.LEFT, padx = 10)
 
-cal1 = Calendar(root, selectmode="day",date_pattern='mm/dd/y', year=2020, month=12, day=10)
+cal1 = Calendar(root, selectmode="day",date_pattern='mm/dd/y', year=today.year, month=today.month, day=today.day)
 cal1.pack(pady=20)
 
 def fecha():

@@ -33,6 +33,7 @@ def redirecc(root, nombre):
 sol = tk.StringVar()
 fail = tk.StringVar()
 f1 = tk.StringVar()
+today = datetime.today()
 
 def obt_fecha(lista_abonos):
     lista = []
@@ -54,7 +55,7 @@ label_tex = tk.Label(root, text="Seleccione la fecha donde se encuentre el mes y
 def fecha():
     f1.set(cal1.get_date()[0:2] + " - " + cal1.get_date()[6:10])
 
-cal1 = Calendar(root, selectmode="day",date_pattern='mm/dd/y', year=2020, month=12, day=10)
+cal1 = Calendar(root, selectmode="day",date_pattern='mm/dd/y', year=today.year, month=today.month, day=today.day)
 cal1.pack(pady=20)
 
 botonFec1 = tk.Button(root, text="Confrimar fecha",command=fecha, font=LARGE_FONT).pack(pady=10)
