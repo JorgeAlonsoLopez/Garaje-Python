@@ -118,10 +118,10 @@ def infoTick(ticket):
 
     from reportlab.pdfgen import canvas
 
-    path = os.path.expanduser("~/Downloads")
+    path = os.path.expanduser("~/Desktop")
     pdf = canvas.Canvas(f"{path}/"+fileName)
     pdf.setTitle(documentTitle)
-    pdf.setAuthor("Jorge Alosno")
+    pdf.setAuthor("Jorge Alonso")
 
     pdf.drawCentredString(300, 770, title)
 

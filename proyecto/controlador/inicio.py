@@ -22,7 +22,7 @@ import servicio.AbonoService as serv_abo
 LARGE_FONT= ("Verdana", 10)
 NEGRITA= ("Verdana", 12, "bold")
 TITULO= ("Verdana", 15, "bold")
-PASSW = "1"
+PASSW = "1234"
 # Configuración de la raíz
 root = tk.Tk()
 root.geometry("900x800")
@@ -74,7 +74,7 @@ def comprobar_contr():
     else:
         return redirecc(root, "inicio")
 
-button2 = tk.Button(frame_admin, text="Comprobar",
+button2 = tk.Button(frame_admin, text="Acceder",
                     command=comprobar_contr)
 button2.pack(padx=5, pady=20)
 
