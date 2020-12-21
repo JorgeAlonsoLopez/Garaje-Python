@@ -7,3 +7,5 @@ Los clientes podrán ingresar y retirar sus vehículos, aportando los datos esta
 Los administradores, para acceder tiene que insertar la siguiente contraseña: 1234  
 
 Podrán crear, modificar y eliminar abonos, obtener información de las plazas del parking, obtener una lista de abonos que caducan en un mes y año determinado o en los próximos 10 días y obtener una facturación procedente de los abonos, en un año determinado y de los tickets, entre dos fechas y horas determinadas.
+
+Para iniciar el programa, se ejecuta el main.py
